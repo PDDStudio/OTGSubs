@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/OTGSubs.iml" filepath="$PROJECT_DIR$/OTGSubs.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/substratum-packager/substratum-packager.iml" filepath="$PROJECT_DIR$/substratum-packager/substratum-packager.iml" />
     </modules>
   </component>
 </project>
