@@ -1,11 +1,26 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
 	<!-- Base application theme. -->
-	<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+	<style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
 		<!-- Customize your theme here. -->
 		<item name="colorPrimary">@color/colorPrimary</item>
 		<item name="colorPrimaryDark">@color/colorPrimaryDark</item>
 		<item name="colorAccent">@color/colorAccent</item>
+		<item name="windowActionBar">false</item>
+		<item name="windowNoTitle">true</item>
+	</style>
+
+	<style name="TextHeader">
+		<item name="android:layout_width">match_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:textSize">@dimen/headerTitle</item>
+		<item name="android:textColor">?android:textColorPrimary</item>
+		<item name="android:fontFamily" tools:ignore="NewApi">sans-serif-light</item>
+		<item name="android:layout_marginLeft">@dimen/headerMarginStart</item>
+		<item name="android:layout_marginStart" tools:ignore="NewApi">@dimen/headerMarginStart
+		</item>
+		<item name="android:layout_marginTop">@dimen/headerMarginVertical</item>
+		<item name="android:layout_marginBottom">@dimen/headerMarginVertical</item>
 	</style>
 
 </resources>
