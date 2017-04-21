@@ -13,11 +13,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import java8.util.stream.StreamSupport;
+
 /**
  * Created by pddstudio on 20/04/2017.
  */
 
 public class SubstratumPackager {
+
+	private static final String TAG = SubstratumPackager.class.getSimpleName();
 
 	private static final String SOURCES_ZIP = "source.zip";
 	private static final String SUBSTRATUM_ZIP = "substratum.zip";
@@ -34,7 +38,7 @@ public class SubstratumPackager {
 
 	private boolean unzipDefaultArchives() {
 		try {
-			FileUtils.cleanDirectory(cacheDir);
+			cleanCache();
 			boolean copySources = AssetUtils.copyFromAssetsToCache(cacheDir, context.getAssets(), SOURCES_ZIP);
 			boolean copySubs = AssetUtils.copyFromAssetsToCache(cacheDir, context.getAssets(), SUBSTRATUM_ZIP);
 			return copySources && copySubs;
@@ -44,7 +48,7 @@ public class SubstratumPackager {
 		}
 	}
 
-	public void doWork() {
+	public void doWork(PackageCallback packageCallback) {
 		if(unzipDefaultArchives()) {
 			File destDir = new File(cacheDir, "result");
 			try {
@@ -52,13 +56,30 @@ public class SubstratumPackager {
 				ZipUtils.extractZip(new File(cacheDir, SUBSTRATUM_ZIP), destDir);
 				ZipUtils.mergeDirectories(destDir, assetDirs.toArray(new File[assetDirs.size()]));
 				File apkFile = new File(cacheDir, "dummy.apk");
-				ZipUtils.createApkFromDir(destDir, apkFile);
-				Log.d("SubsPkg","APK present: " + apkFile.exists() + " / " + apkFile.getAbsolutePath());
+				File signedApk = ZipUtils.createApkFromDir(destDir, apkFile);
+				if(signedApk.exists()) {
+					packageCallback.onPackagingSucceeded(signedApk);
+				} else {
+					packageCallback.onPackagingFailed(-1);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
+				//TODO: implement proper error handling
+				packageCallback.onPackagingFailed(0);
 			}
 		} else {
+			packageCallback.onPackagingFailed(1);
+		}
+	}
 
+	public void cleanCache() {
+		try {
+			StreamSupport.stream(org.apache.commons.io.FileUtils.listFiles(cacheDir, null, true)).forEach(file -> Log.d(TAG, "File to delete: " + file.getAbsolutePath()));
+			FileUtils.cleanDirectory(cacheDir);
+			Log.i(TAG, "Cache directory cleaned at " + cacheDir.getAbsolutePath());
+		} catch (IOException io) {
+			io.printStackTrace();
+			Log.e(TAG, "Unable to clean cache directory!");
 		}
 	}
 
