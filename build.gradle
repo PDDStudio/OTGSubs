@@ -6,6 +6,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.1'
+        classpath 'me.tatarka:gradle-retrolambda:3.6.0'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -15,7 +16,25 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
     }
+}
+
+ext {
+    supportLibraryVersion = "25.3.1"
+    constraintLayoutVersion = "1.0.0-beta4"
+
+    buildToolsVersion = "25.0.2"
+    minSdk = 21
+    targetSdk = 25
+
+    gsonLibraryVersion = "2.8.0"
+    androidAnnotationsVersion = "4.3.0"
+    streamSupportLibraryVersion = "1.5.4"
+    materialDrawerLibraryVersion = "5.6.0"
+    ztZipLibraryVersion = "1.11"
+    commonsIoLibraryVersion = "2.5"
 }
 
 task clean(type: Delete) {
