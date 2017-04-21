@@ -29,10 +29,18 @@ dependencies {
     compile "com.android.support:appcompat-v7:${rootProject.ext.supportLibraryVersion}"
     compile "com.android.support.constraint:constraint-layout:${rootProject.ext.constraintLayoutVersion}"
     compile "com.android.support:design:${rootProject.ext.supportLibraryVersion}"
+    compile "com.android.support:cardview-v7:${rootProject.ext.supportLibraryVersion}"
 
     compile("com.mikepenz:materialdrawer:${rootProject.ext.materialDrawerLibraryVersion}@aar") {
         transitive = true
     }
+
+    compile "net.grandcentrix.thirtyinch:thirtyinch:${rootProject.ext.thirtyInchLibraryVersion}"
+    compile "com.nbsp:library:${rootProject.ext.filePickerLibraryVersion}"
+    compile "com.afollestad.material-dialogs:core:${rootProject.ext.materialDialogsLibraryVersion}"
+    compile "com.afollestad.material-dialogs:commons:${rootProject.ext.materialDialogsLibraryVersion}"
+
+    compile "org.greenrobot:eventbus:${rootProject.ext.eventBusLibraryVersion}"
 
 
     annotationProcessor "org.androidannotations:androidannotations:${rootProject.ext.androidAnnotationsVersion}"
