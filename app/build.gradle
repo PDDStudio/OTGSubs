@@ -1,12 +1,13 @@
 apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion rootProject.ext.targetSdk
+    buildToolsVersion rootProject.ext.buildToolsVersion
     defaultConfig {
         applicationId "com.pddstudio.otgsubs"
-        minSdkVersion 21
-        targetSdkVersion 25
+        minSdkVersion rootProject.ext.minSdk
+        targetSdkVersion rootProject.ext.targetSdk
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -17,11 +18,24 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
+    compile "com.android.support:appcompat-v7:${rootProject.ext.supportLibraryVersion}"
+    compile "com.android.support.constraint:constraint-layout:${rootProject.ext.constraintLayoutVersion}"
+    compile "com.android.support:design:${rootProject.ext.supportLibraryVersion}"
+
+    compile("com.mikepenz:materialdrawer:${rootProject.ext.materialDrawerLibraryVersion}@aar") {
+        transitive = true
+    }
+
+
+    annotationProcessor "org.androidannotations:androidannotations:${rootProject.ext.androidAnnotationsVersion}"
+    compile "org.androidannotations:androidannotations-api:${rootProject.ext.androidAnnotationsVersion}"
     compile project(':substratum-packager')
 }

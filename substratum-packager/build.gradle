@@ -1,12 +1,13 @@
 apply plugin: 'com.android.library'
+apply plugin: 'me.tatarka.retrolambda'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion rootProject.ext.targetSdk
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 25
+        minSdkVersion rootProject.ext.minSdk
+        targetSdkVersion rootProject.ext.targetSdk
         versionCode 1
         versionName "1.0"
 
@@ -19,11 +20,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'org.zeroturnaround:zt-zip:1.11'
-    compile 'com.google.code.gson:gson:2.8.0'
-    compile 'commons-io:commons-io:2.5'
+    compile "org.zeroturnaround:zt-zip:${rootProject.ext.ztZipLibraryVersion}"
+    compile "com.google.code.gson:gson:${rootProject.ext.gsonLibraryVersion}"
+    compile "commons-io:commons-io:${rootProject.ext.commonsIoLibraryVersion}"
+    compile "net.sourceforge.streamsupport:streamsupport:${rootProject.ext.streamSupportLibraryVersion}"
+    annotationProcessor "org.androidannotations:androidannotations:${rootProject.ext.androidAnnotationsVersion}"
+    compile "org.androidannotations:androidannotations-api:${rootProject.ext.androidAnnotationsVersion}"
 }
