@@ -18,6 +18,7 @@ allprojects {
         jcenter()
         mavenCentral()
         maven { url 'https://jitpack.io' }
+        maven { url  "http://dl.bintray.com/lukaville/maven" }
     }
 }
 
@@ -35,6 +36,9 @@ ext {
     materialDrawerLibraryVersion = "5.6.0"
     ztZipLibraryVersion = "1.11"
     commonsIoLibraryVersion = "2.5"
+    thirtyInchLibraryVersion = "0.8.0-rc3"
+    filePickerLibraryVersion = "1.2"
+    materialDialogsLibraryVersion = "0.9.4.4"
 }
 
 task clean(type: Delete) {

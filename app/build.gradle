@@ -34,6 +34,11 @@ dependencies {
         transitive = true
     }
 
+    compile "net.grandcentrix.thirtyinch:thirtyinch:${rootProject.ext.thirtyInchLibraryVersion}"
+    compile "com.nbsp:library:${rootProject.ext.filePickerLibraryVersion}"
+    compile "com.afollestad.material-dialogs:core:${rootProject.ext.materialDialogsLibraryVersion}"
+    compile "com.afollestad.material-dialogs:commons:${rootProject.ext.materialDialogsLibraryVersion}"
+
 
     annotationProcessor "org.androidannotations:androidannotations:${rootProject.ext.androidAnnotationsVersion}"
     compile "org.androidannotations:androidannotations-api:${rootProject.ext.androidAnnotationsVersion}"
