@@ -39,6 +39,7 @@ ext {
     thirtyInchLibraryVersion = "0.8.0-rc3"
     filePickerLibraryVersion = "1.2"
     materialDialogsLibraryVersion = "0.9.4.4"
+    eventBusLibraryVersion = "3.0.0"
 }
 
 task clean(type: Delete) {
