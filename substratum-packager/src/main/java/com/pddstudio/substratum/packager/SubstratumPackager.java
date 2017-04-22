@@ -3,9 +3,13 @@ package com.pddstudio.substratum.packager;
 import android.content.Context;
 import android.util.Log;
 
+import com.pddstudio.substratum.packager.models.ApkInfo;
 import com.pddstudio.substratum.packager.utils.AssetUtils;
 import com.pddstudio.substratum.packager.utils.ZipUtils;
 
+import org.androidannotations.annotations.AfterInject;
+import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.EBean;
 import org.zeroturnaround.zip.commons.FileUtils;
 
 import java.io.File;
@@ -19,6 +23,7 @@ import java8.util.stream.StreamSupport;
  * Created by pddstudio on 20/04/2017.
  */
 
+@EBean(scope = EBean.Scope.Singleton)
 public class SubstratumPackager {
 
 	private static final String TAG = SubstratumPackager.class.getSimpleName();
@@ -26,14 +31,20 @@ public class SubstratumPackager {
 	private static final String SOURCES_ZIP = "source.zip";
 	private static final String SUBSTRATUM_ZIP = "substratum.zip";
 
-	private final File       cacheDir;
-	private final Context    context;
-	private final List<File> assetDirs;
+	private File       cacheDir;
+	private Context    context;
+	private List<File> assetDirs;
+	private List<ApkInfo> apkInfoList;
 
-	private SubstratumPackager(Builder builder) {
+	@Bean
+	protected ApkExtractor apkExtractor;
+
+	private SubstratumPackager applyConfig(Builder builder) {
 		this.cacheDir = builder.cacheDir;
 		this.context = builder.context.getApplicationContext();
 		this.assetDirs = builder.assetDirs;
+		this.apkInfoList = builder.apkInformationList;
+		return this;
 	}
 
 	private boolean unzipDefaultArchives() {
@@ -48,6 +59,16 @@ public class SubstratumPackager {
 		}
 	}
 
+	@AfterInject
+	protected void loadApks() {
+		apkInfoList = apkExtractor.apkHelper.getInstalledApks();
+		StreamSupport.stream(apkInfoList).forEach(apkInfo -> Log.d(TAG, "APK: " + apkInfo));
+	}
+
+	public ApkInfo getApkInfo(String packageName) {
+		return StreamSupport.stream(apkExtractor.apkHelper.getInstalledApks()).filter(apkInfo -> apkInfo.getApk().equals(packageName)).findAny().orElse(null);
+	}
+
 	public void doWork(PackageCallback packageCallback) {
 		if(unzipDefaultArchives()) {
 			File destDir = new File(cacheDir, "result");
@@ -55,6 +76,26 @@ public class SubstratumPackager {
 				ZipUtils.extractZip(new File(cacheDir, SOURCES_ZIP), destDir);
 				ZipUtils.extractZip(new File(cacheDir, SUBSTRATUM_ZIP), destDir);
 				ZipUtils.mergeDirectories(destDir, assetDirs.toArray(new File[assetDirs.size()]));
+
+				if(apkExtractor == null) {
+					apkExtractor = new ApkExtractor();
+				}
+
+				StreamSupport.stream(apkInfoList).forEach(apkInfo -> {
+					if(apkInfo != null) {
+						try {
+							File apkFile = apkExtractor.copyApkToCache(cacheDir, apkInfo);
+							if(apkFile != null && apkFile.exists()) {
+								apkExtractor.extractAssetsFromApk(apkFile, destDir);
+							}
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					} else {
+						Log.d(TAG, "Skipping ApkInfo, was null...");
+					}
+				});
+
 				File apkFile = new File(cacheDir, "dummy.apk");
 				File signedApk = ZipUtils.createApkFromDir(destDir, apkFile);
 				if(signedApk.exists()) {
@@ -88,20 +129,31 @@ public class SubstratumPackager {
 		private final File       cacheDir;
 		private       Context    context;
 		private       List<File> assetDirs;
+		private List<ApkInfo>    apkInformationList;
 
 		public Builder(Context context) {
 			this.cacheDir = context.getCacheDir();
 			this.context = context.getApplicationContext();
 			this.assetDirs = new ArrayList<>();
+			this.apkInformationList = new ArrayList<>();
 		}
 
 		public Builder addAssetsDir(File dir) {
-			this.assetDirs.add(dir);
+			if(dir != null && dir.isDirectory()) {
+				this.assetDirs.add(dir);
+			}
+			return this;
+		}
+
+		public Builder addApkInfo(ApkInfo apkInfo) {
+			if(apkInfo != null) {
+				apkInformationList.add(apkInfo);
+			}
 			return this;
 		}
 
 		public SubstratumPackager build() {
-			return new SubstratumPackager(this);
+			return new SubstratumPackager().applyConfig(this);
 		}
 
 	}
