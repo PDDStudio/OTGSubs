@@ -10,7 +10,9 @@ import android.util.Log;
 
 import com.pddstudio.substratum.packager.PackageCallback;
 import com.pddstudio.substratum.packager.SubstratumPackager;
+import com.pddstudio.substratum.packager.models.ApkInfo;
 
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EIntentService;
 import org.androidannotations.annotations.ServiceAction;
 import org.androidannotations.api.support.app.AbstractIntentService;
@@ -38,7 +40,8 @@ public class PackageService extends AbstractIntentService implements PackageCall
 		PackageService_.intent(context).doPackage(assetsList).start();
 	}
 
-	private SubstratumPackager packager;
+	@Bean
+	protected SubstratumPackager packager;
 
 	public PackageService() {
 		super(PackageService.class.getSimpleName());
@@ -56,6 +59,12 @@ public class PackageService extends AbstractIntentService implements PackageCall
 	@ServiceAction
 	void doPackage(@Nullable List<String> fileList) {
 		SubstratumPackager.Builder builder = new SubstratumPackager.Builder(this);
+		ApkInfo info = packager.getApkInfo("com.moelle.deepdarkness");
+		if(info != null) {
+			builder.addApkInfo(info);
+		} else {
+			Log.w(TAG, "APK Info was null...");
+		}
 		if(fileList != null && !fileList.isEmpty()) {
 			StreamSupport.stream(fileList)
 						 .map(File::new)
