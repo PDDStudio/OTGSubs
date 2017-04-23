@@ -41,6 +41,7 @@ dependencies {
     compile "com.afollestad.material-dialogs:commons:${rootProject.ext.materialDialogsLibraryVersion}"
 
     compile "org.greenrobot:eventbus:${rootProject.ext.eventBusLibraryVersion}"
+    compile "com.github.clans:fab:${rootProject.ext.fabLibraryVersion}"
 
 
     annotationProcessor "org.androidannotations:androidannotations:${rootProject.ext.androidAnnotationsVersion}"
