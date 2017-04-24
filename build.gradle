@@ -43,6 +43,8 @@ ext {
     fabLibraryVersion = "1.6.4"
     fastAdapterLibraryVersion = "2.5.2"
     materializeLibraryVersion = "1.0.1"
+    googleMaterialTypeFaceLibraryVersion = "3.0.1.0.original"
+    fontAwesomeTypefaceLibraryVersion = "4.7.0.0"
 }
 
 task clean(type: Delete) {
