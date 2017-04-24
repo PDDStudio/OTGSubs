@@ -11,6 +11,7 @@ public class AssetFileInfo implements Serializable {
 	private AssetsType type;
 	private String     fileLocation;
 	private String     fileName;
+	private String relativeAssetsDestinationLocation;
 
 	public AssetFileInfo(AssetsType type, String fileLocation, String fileName) {
 		this.type = type;
@@ -28,5 +29,13 @@ public class AssetFileInfo implements Serializable {
 
 	public String getFileName() {
 		return fileName;
+	}
+
+	public String getRelativeAssetsDestinationLocation() {
+		return relativeAssetsDestinationLocation;
+	}
+
+	public void setRelativeAssetsDestinationLocation(String relativeAssetsDestinationLocation) {
+		this.relativeAssetsDestinationLocation = relativeAssetsDestinationLocation;
 	}
 }

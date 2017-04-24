@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.Log;
 
 import com.pddstudio.substratum.packager.models.ApkInfo;
+import com.pddstudio.substratum.packager.models.AssetFileInfo;
+import com.pddstudio.substratum.packager.models.AssetsType;
 import com.pddstudio.substratum.packager.utils.AssetUtils;
 import com.pddstudio.substratum.packager.utils.ZipUtils;
 
@@ -15,7 +17,9 @@ import org.zeroturnaround.zip.commons.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import java8.util.stream.StreamSupport;
 
@@ -28,12 +32,19 @@ public class SubstratumPackager {
 
 	private static final String TAG = SubstratumPackager.class.getSimpleName();
 
-	private static final String SOURCES_ZIP = "source.zip";
+	private static final String SOURCES_ZIP    = "source.zip";
 	private static final String SUBSTRATUM_ZIP = "substratum.zip";
 
-	private File       cacheDir;
-	private Context    context;
-	private List<File> assetDirs;
+	private static final String OVERLAYS_DIR       = "overlays";
+	private static final String AUDIO_DIR          = "audio";
+	private static final String FONTS_DIR          = "fonts";
+	private static final String BOOT_ANIMATION_DIR = "bootanimation";
+
+	private static final String ASSETS_DIR = "assets";
+
+	private File          cacheDir;
+	private Context       context;
+	private List<File>    assetDirs;
 	private List<ApkInfo> apkInfoList;
 
 	@Bean
@@ -49,7 +60,7 @@ public class SubstratumPackager {
 
 	private boolean unzipDefaultArchives() {
 		try {
-			cleanCache();
+			//cleanCache();
 			boolean copySources = AssetUtils.copyFromAssetsToCache(cacheDir, context.getAssets(), SOURCES_ZIP);
 			boolean copySubs = AssetUtils.copyFromAssetsToCache(cacheDir, context.getAssets(), SUBSTRATUM_ZIP);
 			return copySources && copySubs;
@@ -66,26 +77,26 @@ public class SubstratumPackager {
 	}
 
 	public ApkInfo getApkInfo(String packageName) {
-		return StreamSupport.stream(apkExtractor.apkHelper.getInstalledApks()).filter(apkInfo -> apkInfo.getApk().equals(packageName)).findAny().orElse(null);
+		return StreamSupport.stream(apkExtractor.apkHelper.getInstalledApks()).filter(apkInfo -> apkInfo.getPackageName().equals(packageName)).findAny().orElse(null);
 	}
 
 	public void doWork(PackageCallback packageCallback) {
-		if(unzipDefaultArchives()) {
+		if (unzipDefaultArchives()) {
 			File destDir = new File(cacheDir, "result");
 			try {
 				ZipUtils.extractZip(new File(cacheDir, SOURCES_ZIP), destDir);
 				ZipUtils.extractZip(new File(cacheDir, SUBSTRATUM_ZIP), destDir);
 				ZipUtils.mergeDirectories(destDir, assetDirs.toArray(new File[assetDirs.size()]));
 
-				if(apkExtractor == null) {
+				if (apkExtractor == null) {
 					apkExtractor = new ApkExtractor();
 				}
 
 				StreamSupport.stream(apkInfoList).forEach(apkInfo -> {
-					if(apkInfo != null) {
+					if (apkInfo != null) {
 						try {
 							File apkFile = apkExtractor.copyApkToCache(cacheDir, apkInfo);
-							if(apkFile != null && apkFile.exists()) {
+							if (apkFile != null && apkFile.exists()) {
 								apkExtractor.extractAssetsFromApk(apkFile, destDir);
 							}
 						} catch (IOException e) {
@@ -98,7 +109,7 @@ public class SubstratumPackager {
 
 				File apkFile = new File(cacheDir, "dummy.apk");
 				File signedApk = ZipUtils.createApkFromDir(destDir, apkFile);
-				if(signedApk.exists()) {
+				if (signedApk.exists()) {
 					packageCallback.onPackagingSucceeded(signedApk);
 				} else {
 					packageCallback.onPackagingFailed(-1);
@@ -124,12 +135,51 @@ public class SubstratumPackager {
 		}
 	}
 
+	public void processPackageRequest(PackageRequest packageRequest, PackageCallback packageCallback) {
+		/*File tempDir = new File(cacheDir, "tmp_build_" + System.nanoTime());
+		boolean createTempDir = tempDir.mkdirs();
+		if(!createTempDir && !tempDir.exists()) {
+			Log.e(TAG, "Couldn't create temporary directory to package patched application!");
+			packageCallback.onPackagingFailed(-99);
+			return;
+		}*/
+		if (unzipDefaultArchives()) {
+			File destDir = new File(cacheDir, "result");
+			try {
+				ZipUtils.extractZip(new File(cacheDir, SOURCES_ZIP), destDir);
+				ZipUtils.extractZip(new File(cacheDir, SUBSTRATUM_ZIP), destDir);
+
+				if (apkExtractor == null) {
+					apkExtractor = new ApkExtractor();
+				}
+
+				File cachedAssetsDir = new File(destDir, ASSETS_DIR);
+				packageRequest.copyResourcesIntoDir(cachedAssetsDir);
+
+				File apkFile = new File(cacheDir, "dummy.apk");
+				File signedApk = ZipUtils.createApkFromDir(destDir, apkFile);
+				if (signedApk.exists()) {
+					packageCallback.onPackagingSucceeded(signedApk);
+				} else {
+					packageCallback.onPackagingFailed(-1);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				//TODO: implement proper error handling
+				packageCallback.onPackagingFailed(0);
+			}
+		} else {
+			packageCallback.onPackagingFailed(1);
+		}
+
+	}
+
 	public static final class Builder {
 
-		private final File       cacheDir;
-		private       Context    context;
-		private       List<File> assetDirs;
-		private List<ApkInfo>    apkInformationList;
+		private final File          cacheDir;
+		private       Context       context;
+		private       List<File>    assetDirs;
+		private       List<ApkInfo> apkInformationList;
 
 		public Builder(Context context) {
 			this.cacheDir = context.getCacheDir();
@@ -139,14 +189,14 @@ public class SubstratumPackager {
 		}
 
 		public Builder addAssetsDir(File dir) {
-			if(dir != null && dir.isDirectory()) {
+			if (dir != null && dir.isDirectory()) {
 				this.assetDirs.add(dir);
 			}
 			return this;
 		}
 
 		public Builder addApkInfo(ApkInfo apkInfo) {
-			if(apkInfo != null) {
+			if (apkInfo != null) {
 				apkInformationList.add(apkInfo);
 			}
 			return this;
@@ -156,6 +206,74 @@ public class SubstratumPackager {
 			return new SubstratumPackager().applyConfig(this);
 		}
 
+	}
+
+	public static final class PackageRequest {
+
+		private final Map<AssetsType, List<AssetFileInfo>> requestMap;
+
+		public PackageRequest() {
+			this.requestMap = new HashMap<>();
+		}
+
+		public void setFontSources(List<AssetFileInfo> fontSources) {
+			this.requestMap.put(AssetsType.FONTS, fontSources);
+		}
+
+		public void setOverlaySources(List<AssetFileInfo> overlaySources) {
+			this.requestMap.put(AssetsType.OVERLAYS, overlaySources);
+		}
+
+		public void setAudioSources(List<AssetFileInfo> audioSources) {
+			this.requestMap.put(AssetsType.AUDIO, audioSources);
+		}
+
+		public void setBootAnimationSources(List<AssetFileInfo> bootAnimationSources) {
+			this.requestMap.put(AssetsType.BOOT_ANIMATIONS, bootAnimationSources);
+		}
+
+		private void copyResourcesIntoDir(File cacheAssetsRoot) {
+			StreamSupport.stream(requestMap.keySet()).forEach(keySet -> {
+				List<AssetFileInfo> files = requestMap.get(keySet);
+				StreamSupport.stream(files).forEach(assetFileInfo -> {
+					File target = new File(assetFileInfo.getFileLocation());
+					File destDir = cacheAssetsRoot;
+
+					switch (keySet) {
+						case AUDIO:
+							destDir = new File(cacheAssetsRoot, AUDIO_DIR);
+							break;
+						case BOOT_ANIMATIONS:
+							destDir = new File(cacheAssetsRoot, BOOT_ANIMATION_DIR);
+							break;
+						case FONTS:
+							destDir = new File(cacheAssetsRoot, FONTS_DIR);
+							break;
+						case OVERLAYS:
+							destDir = new File(cacheAssetsRoot, OVERLAYS_DIR);
+							break;
+					}
+
+					if(assetFileInfo.getRelativeAssetsDestinationLocation() != null) {
+						destDir = new File(cacheAssetsRoot, assetFileInfo.getRelativeAssetsDestinationLocation());
+					}
+
+					if (!destDir.exists()) {
+						destDir.mkdirs();
+					}
+
+					try {
+						if (target.isDirectory()) {
+							FileUtils.copyDirectory(target, destDir);
+						} else {
+							FileUtils.copyFileToDirectory(target, destDir);
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				});
+			});
+		}
 	}
 
 }

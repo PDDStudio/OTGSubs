@@ -44,6 +44,10 @@ public class ApkExtractor {
 		return outputLoc;
 	}
 
+	public List<ApkInfo> getApkInfoList() {
+		return apkInfos;
+	}
+
 	public void extractAssetsFromApk(File cachedApkFile, File destDir) {
 		ZipUtil.unpack(cachedApkFile, destDir, name -> name.startsWith("assets/") ? name : null);
 	}
