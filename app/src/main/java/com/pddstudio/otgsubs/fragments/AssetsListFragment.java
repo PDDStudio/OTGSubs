@@ -11,6 +11,7 @@ import com.pddstudio.otgsubs.EventBusBean;
 import com.pddstudio.otgsubs.PackageInfoBean;
 import com.pddstudio.otgsubs.R;
 import com.pddstudio.otgsubs.events.AssetTypeAddedEvent;
+import com.pddstudio.otgsubs.events.RefreshItemListEvent;
 import com.pddstudio.otgsubs.models.AssetsAdapterItem;
 import com.pddstudio.substratum.packager.models.AssetFileInfo;
 import com.pddstudio.substratum.packager.models.AssetsType;
@@ -94,6 +95,15 @@ public class AssetsListFragment extends Fragment {
 		if (event != null && event.getAssetsType().equals(assetsType) && isVisible() && !event.isIgnore() && !isAssetInfoPresent(event.getAssetFileInfo())) {
 			AssetsAdapterItem adapterItem = new AssetsAdapterItem(event.getAssetFileInfo());
 			assetsAdapter.add(adapterItem);
+		}
+	}
+
+	@Subscribe(threadMode = ThreadMode.MAIN)
+	public void onRefreshAssets(RefreshItemListEvent event) {
+		assetsAdapter.clear();
+		List<AssetFileInfo> info = packageBean.getExistingInformation(assetsType);
+		if (info != null && !info.isEmpty()) {
+			StreamSupport.stream(info).map(AssetsAdapterItem::new).forEach(assetsAdapter::add);
 		}
 	}
 

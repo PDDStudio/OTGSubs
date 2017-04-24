@@ -3,12 +3,15 @@ package com.pddstudio.otgsubs;
 import android.support.annotation.NonNull;
 
 import com.pddstudio.otgsubs.events.AssetTypeAddedEvent;
+import com.pddstudio.otgsubs.events.ImportAssetsFromApkEvent;
+import com.pddstudio.otgsubs.events.RefreshItemListEvent;
 import com.pddstudio.substratum.packager.models.AssetFileInfo;
 import com.pddstudio.substratum.packager.models.AssetsType;
 
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +83,14 @@ public class PackageInfoBean {
 			AssetFileInfo info = event.getAssetFileInfo();
 			storeAssetFileInfo(info);
 			redirectEvent(event);
+		}
+	}
+
+	@Subscribe(threadMode = ThreadMode.ASYNC)
+	public void onImportEventReceived(ImportAssetsFromApkEvent event) {
+		if(event != null) {
+			StreamSupport.stream(event.getAssets()).forEach(this::storeAssetFileInfo);
+			eventBusBean.post(new RefreshItemListEvent());
 		}
 	}
 

@@ -8,9 +8,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.pddstudio.otgsubs.PackageInfoBean;
 import com.pddstudio.substratum.packager.PackageCallback;
 import com.pddstudio.substratum.packager.SubstratumPackager;
 import com.pddstudio.substratum.packager.models.ApkInfo;
+import com.pddstudio.substratum.packager.models.AssetsType;
 
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EIntentService;
@@ -40,8 +42,15 @@ public class PackageService extends AbstractIntentService implements PackageCall
 		PackageService_.intent(context).doPackage(assetsList).start();
 	}
 
+	public static void createApkFromRequestedAssets(@NonNull Context context) {
+		PackageService_.intent(context).createPatchedPackage().start();
+	}
+
 	@Bean
 	protected SubstratumPackager packager;
+
+	@Bean
+	PackageInfoBean packageBean;
 
 	public PackageService() {
 		super(PackageService.class.getSimpleName());
@@ -73,6 +82,18 @@ public class PackageService extends AbstractIntentService implements PackageCall
 		}
 		packager = builder.build();
 		packager.doWork(this);
+	}
+
+	@ServiceAction
+	protected void createPatchedPackage() {
+		packager = new SubstratumPackager.Builder(this).build();
+		SubstratumPackager.PackageRequest packageRequest = new SubstratumPackager.PackageRequest();
+		packageRequest.setFontSources(packageBean.getExistingInformation(AssetsType.FONTS));
+		packageRequest.setAudioSources(packageBean.getExistingInformation(AssetsType.AUDIO));
+		packageRequest.setBootAnimationSources(packageBean.getExistingInformation(AssetsType.BOOT_ANIMATIONS));
+		packageRequest.setOverlaySources(packageBean.getExistingInformation(AssetsType.OVERLAYS));
+
+		packager.processPackageRequest(packageRequest, this);
 	}
 
 	@Override

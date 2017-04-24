@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<item
+		android:title="@string/app_name"
+		android:orderInCategory="1"
+		android:icon="@drawable/ic_more_vert_24dp"
+		app:showAsAction="always">
+
+		<menu>
+
+			<item
+				android:id="@+id/menu_restore_defaults"
+				android:title="@string/menu_item_clean"
+				android:icon="@drawable/ic_delete_forever_24dp" />
+
+			<item
+				android:id="@+id/menu_import_apk"
+				android:title="@string/menu_item_import"
+				android:icon="@drawable/ic_unarchive_24dp" />
+			<item
+				android:id="@+id/menu_build_apk"
+				android:title="@string/menu_item_build"
+				android:icon="@drawable/ic_build_24dp" />
+
+		</menu>
+
+	</item>
+
+</menu>
