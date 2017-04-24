@@ -4,47 +4,92 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
-	<android.support.v7.widget.CardView
-		android:id="@+id/picker_card_view"
+	<LinearLayout
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_margin="8dp">
+		android:layout_height="match_parent"
+		android:orientation="vertical">
 
-		<LinearLayout
-			android:layout_width="match_parent"
+		<TextView
+			style="@style/TextHeader"
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_margin="16dp"
-			android:orientation="vertical">
+			android:layout_marginBottom="4dp"
+			android:text="@string/getting_started_header"
+			android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
-			<TextView
-				style="@style/TextHeader"
+		<TextView
+			style="@style/TextHeader.SubHeader"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="0dp"
+			android:text="@string/getting_started_sub_text" />
+
+		<RadioGroup
+			android:id="@+id/theme_mode_radio_group"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
+
+			<RadioButton
+				android:id="@+id/radio_button_new_theme"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:text="@string/select_folder" />
+				android:layout_marginLeft="@dimen/headerMarginStart"
+				android:layout_marginStart="@dimen/headerMarginStart"
+				android:text="@string/radio_button_new_theme" />
 
-			<Button
-				android:id="@+id/assets_picker_button"
-				android:layout_width="wrap_content"
+			<RadioButton
+				android:id="@+id/radio_button_existing_theme"
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:text="@string/pick_assets_folder" />
+				android:text="@string/radio_button_existing_theme"
+				android:layout_marginLeft="@dimen/headerMarginStart"
+				android:layout_marginStart="@dimen/headerMarginStart"/>
 
-			<TextView
-				android:id="@+id/assets_dir_text_view"
-				android:layout_width="wrap_content"
+		</RadioGroup>
+
+		<android.support.v7.widget.CardView
+			android:id="@+id/picker_card_view"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="16dp">
+
+			<LinearLayout
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="8dp"
-				tools:text="test" />
+				android:layout_margin="16dp"
+				android:orientation="vertical">
 
-		</LinearLayout>
+				<TextView
+					style="@style/TextHeader"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:text="@string/select_folder" />
 
-	</android.support.v7.widget.CardView>
+				<Button
+					android:id="@+id/assets_picker_button"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/pick_assets_folder" />
 
-	<Button
-		android:id="@+id/build_apk_button"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_below="@+id/picker_card_view"
-		android:text="@string/build_substratum_theme"
-		android:layout_margin="16dp"/>
+				<TextView
+					android:id="@+id/assets_dir_text_view"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="8dp"
+					tools:text="test" />
+
+			</LinearLayout>
+
+		</android.support.v7.widget.CardView>
+
+		<Button
+			android:id="@+id/build_apk_button"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_below="@+id/picker_card_view"
+			android:layout_margin="16dp"
+			android:text="@string/build_substratum_theme" />
+
+	</LinearLayout>
 
 </RelativeLayout>

@@ -5,4 +5,12 @@
 	<string name="pick_assets_folder">Pick Assets Folder</string>
 	<string name="dialog_packaging_title">Preparing APK…</string>
 	<string name="dialog_packaging_content">Please be patient, this might take a minute or two.</string>
+	<string name="getting_started_header">Getting Started</string>
+	<string name="getting_started_sub_text">Start a new Theme from Scratch or based on an existing Substratum Theme</string>
+	<string name="radio_button_new_theme">Create a new Theme</string>
+	<string name="radio_button_existing_theme">Extend an existing Theme</string>
+	<string name="fab_add_font">Add Font</string>
+	<string name="fab_add_overlay">Add Overlay</string>
+	<string name="fab_add_audio">Add Audio</string>
+	<string name="fab_add_boot_animation">Add Boot Animation</string>
 </resources>

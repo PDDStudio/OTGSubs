@@ -6,6 +6,7 @@
 	<dimen name="customEntry">18sp</dimen>
 	<dimen name="sample_button_spacing">2dp</dimen>
 	<dimen name="headerTitle">20sp</dimen>
+	<dimen name="headerSubtitle">16sp</dimen>
 	<dimen name="headerMarginVertical">16dp</dimen>
 	<dimen name="headerMarginStart">12dp</dimen>
 
