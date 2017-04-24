@@ -25,6 +25,9 @@
 		<service android:name=".services.PackageService_"
 			android:exported="false" />
 
+		<service android:name=".services.ImportApkService_"
+			android:exported="false" />
+
 	</application>
 
 </manifest>

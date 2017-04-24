@@ -39,8 +39,16 @@ dependencies {
     compile "com.nbsp:library:${rootProject.ext.filePickerLibraryVersion}"
     compile "com.afollestad.material-dialogs:core:${rootProject.ext.materialDialogsLibraryVersion}"
     compile "com.afollestad.material-dialogs:commons:${rootProject.ext.materialDialogsLibraryVersion}"
+    compile ("com.mikepenz:fastadapter:${rootProject.ext.fastAdapterLibraryVersion}@aar") {
+        transitive = true
+    }
+    compile "com.mikepenz:fastadapter-commons:${rootProject.ext.fastAdapterLibraryVersion}@aar"
+    compile "com.mikepenz:fastadapter-extensions:${rootProject.ext.fastAdapterLibraryVersion}@aar"
+    //The tiny Materialize library used for its useful helper classes
+    compile "com.mikepenz:materialize:${rootProject.ext.materializeLibraryVersion}@aar"
 
     compile "org.greenrobot:eventbus:${rootProject.ext.eventBusLibraryVersion}"
+    compile "com.github.clans:fab:${rootProject.ext.fabLibraryVersion}"
 
 
     annotationProcessor "org.androidannotations:androidannotations:${rootProject.ext.androidAnnotationsVersion}"

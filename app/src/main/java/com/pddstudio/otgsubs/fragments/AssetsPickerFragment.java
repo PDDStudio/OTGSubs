@@ -3,6 +3,8 @@ package com.pddstudio.otgsubs.fragments;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.widget.CompoundButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -10,9 +12,12 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.pddstudio.otgsubs.EventBusBean;
 import com.pddstudio.otgsubs.R;
 import com.pddstudio.otgsubs.events.FileChooserDialogEvent;
+import com.pddstudio.otgsubs.models.FileChooserType;
 import com.pddstudio.otgsubs.services.PackageService;
 
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.CheckedChange;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.Receiver;
@@ -44,6 +49,9 @@ public class AssetsPickerFragment extends Fragment {
 	@ViewById(R.id.assets_dir_text_view)
 	protected TextView selectedDirTextView;
 
+	@ViewById(R.id.theme_mode_radio_group)
+	protected RadioGroup themeModeRadioGroup;
+
 	private void toggleLoadingDialog(boolean showDialog) {
 		if(showDialog) {
 			loadingDialog = new MaterialDialog.Builder(getContext())
@@ -62,15 +70,42 @@ public class AssetsPickerFragment extends Fragment {
 		}
 	}
 
+	private void setThemeTemplate(boolean enabled) {
+		Toast.makeText(getContext(), "Scheme Extension Enabled:" + enabled, Toast.LENGTH_SHORT).show();
+	}
+
+	@AfterViews
+	protected void setupUi() {
+		themeModeRadioGroup.check(R.id.radio_button_new_theme);
+	}
+
 	@Click(R.id.assets_picker_button)
 	protected void onAssetsPickerButtonClicked() {
-		eventBus.post(new FileChooserDialogEvent(true));
+		eventBus.post(new FileChooserDialogEvent(true, FileChooserType.IGNORE));
 	}
 
 	@Click(R.id.build_apk_button)
 	protected void onBuildApkButtonClicked() {
 		toggleLoadingDialog(true);
 		PackageService.packageApplication(getContext(), assets);
+	}
+
+	@CheckedChange({ R.id.radio_button_new_theme, R.id.radio_button_existing_theme})
+	protected void onCheckboxChanged(CompoundButton radioButton, boolean isChecked) {
+		switch(radioButton.getId()) {
+			case R.id.radio_button_new_theme:
+				if(radioButton.isChecked()) {
+					setThemeTemplate(true);
+				}
+				break;
+			case R.id.radio_button_existing_theme:
+				if(radioButton.isChecked()) {
+					setThemeTemplate(false);
+				}
+				break;
+			default:
+				throw new RuntimeException("Unknown state!");
+		}
 	}
 
 	@Receiver(actions = PackageService.ACTION_PACKAGING_DONE, local = true)
@@ -100,7 +135,7 @@ public class AssetsPickerFragment extends Fragment {
 	@Subscribe(threadMode = ThreadMode.MAIN)
 	public void onDirPicked(FileChooserDialogEvent event) {
 		if(event != null && !event.isOpenRequest()) {
-			String result = event.getResultDir();
+			String result = event.getResultLocation();
 			Log.d(TAG, "ResultDir: " + result);
 			if(result != null) {
 				//TODO: allow multiple resources to be selected via picker

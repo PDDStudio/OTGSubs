@@ -17,15 +17,77 @@
 			android:layout_width="match_parent"
 			android:layout_height="?attr/actionBarSize"
 			app:layout_scrollFlags="scroll|enterAlways"
-			app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+			app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
 			app:title="@string/app_name" />
+
+		<android.support.design.widget.TabLayout
+			android:id="@+id/assets_list_tab_layout"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			app:tabGravity="fill"
+			app:tabMode="scrollable"/>
 
 	</android.support.design.widget.AppBarLayout>
 
-	<RelativeLayout
-		android:id="@+id/container"
+	<android.support.v4.view.ViewPager
+		android:id="@+id/fragment_view_pager"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+		app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+	<com.github.clans.fab.FloatingActionMenu
+		android:id="@+id/floating_action_menu"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_alignParentBottom="true"
+		android:layout_alignParentEnd="true"
+		android:layout_alignParentRight="true"
+		android:layout_marginBottom="16dp"
+		android:layout_marginEnd="16dp"
+		android:src="@drawable/fab_add"
+		app:menu_colorNormal="@color/accent"
+		app:menu_colorRipple="@color/colorAccentDark"
+		app:menu_labels_ellipsize="end"
+		app:menu_labels_singleLine="true"
+		app:menu_backgroundColor="#ccffffff"
+		app:menu_labels_position="left"	>
+		
+		<com.github.clans.fab.FloatingActionButton
+			android:id="@+id/fab_add_font"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:src="@drawable/ic_title_24dp"
+			app:fab_colorNormal="@color/accent"
+			app:fab_size="mini"
+			app:fab_label="@string/fab_add_font"/>
+
+		<com.github.clans.fab.FloatingActionButton
+			android:id="@+id/fab_add_overlay"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:src="@drawable/ic_layers_24dp"
+			app:fab_colorNormal="@color/accent"
+			app:fab_size="mini"
+			app:fab_label="@string/fab_add_overlay"/>
+
+		<com.github.clans.fab.FloatingActionButton
+			android:id="@+id/fab_add_audio"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:src="@drawable/ic_audiotrack_24dp"
+			app:fab_colorNormal="@color/accent"
+			app:fab_size="mini"
+			app:fab_label="@string/fab_add_audio"/>
+
+		<com.github.clans.fab.FloatingActionButton
+			android:id="@+id/fab_add_boot_animation"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:src="@drawable/ic_attach_file_24dp"
+			app:fab_colorNormal="@color/accent"
+			app:fab_size="mini"
+			app:fab_label="@string/fab_add_boot_animation"/>
+		
+	</com.github.clans.fab.FloatingActionMenu>
 
 </android.support.design.widget.CoordinatorLayout>

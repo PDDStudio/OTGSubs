@@ -1,3 +1,7 @@
 <resources>
 	<string name="app_name">substratum-packager</string>
+	<string name="fragment_title_fonts">Fonts</string>
+	<string name="fragment_title_overlays">Overlays</string>
+	<string name="fragment_title_audio">Audio</string>
+	<string name="fragment_title_boot_animations">Boot Animations</string>
 </resources>

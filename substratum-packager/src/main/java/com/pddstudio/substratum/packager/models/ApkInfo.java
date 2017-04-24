@@ -3,11 +3,13 @@ package com.pddstudio.substratum.packager.models;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.Serializable;
+
 /**
  * Created by pddstudio on 21/04/2017.
  */
 
-public class ApkInfo {
+public class ApkInfo implements Serializable {
 
 	private String appName;
 	private String apk;
@@ -31,7 +33,7 @@ public class ApkInfo {
 		this.appName = appName;
 	}
 
-	public String getApk() {
+	public String getPackageName() {
 		return apk;
 	}
 
