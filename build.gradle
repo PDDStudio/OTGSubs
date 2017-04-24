@@ -33,7 +33,7 @@ ext {
     gsonLibraryVersion = "2.8.0"
     androidAnnotationsVersion = "4.3.0"
     streamSupportLibraryVersion = "1.5.4"
-    materialDrawerLibraryVersion = "5.6.0"
+    materialDrawerLibraryVersion = "5.9.0"
     ztZipLibraryVersion = "1.11"
     commonsIoLibraryVersion = "2.5"
     thirtyInchLibraryVersion = "0.8.0-rc3"
@@ -41,6 +41,8 @@ ext {
     materialDialogsLibraryVersion = "0.9.4.4"
     eventBusLibraryVersion = "3.0.0"
     fabLibraryVersion = "1.6.4"
+    fastAdapterLibraryVersion = "2.5.2"
+    materializeLibraryVersion = "1.0.1"
 }
 
 task clean(type: Delete) {
