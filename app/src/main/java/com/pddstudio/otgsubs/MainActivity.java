@@ -23,6 +23,7 @@ import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
 import com.github.clans.fab.FloatingActionMenu;
+import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -67,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements FolderChooserDial
 	private static final String[] REQUIRED_PERMISSIONS = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
 	private static final int ASSETS_PICKER_ITEM = 88;
+	private static final int GITHUB_ITEM = 89;
+	private static final int SETTINGS_ITEM = 90;
 
 	@Bean
 	EventBusBean eventBus;
@@ -98,6 +101,8 @@ public class MainActivity extends AppCompatActivity implements FolderChooserDial
 	public void onBackPressed() {
 		if (drawer.isDrawerOpen()) {
 			drawer.closeDrawer();
+		} else if(floatingActionMenu.isOpened()) {
+			floatingActionMenu.close(true);
 		} else {
 			super.onBackPressed();
 		}
@@ -298,7 +303,11 @@ public class MainActivity extends AppCompatActivity implements FolderChooserDial
 
 	private List<IDrawerItem> getDrawerItems() {
 		List<IDrawerItem> items = new ArrayList<>();
-		items.add(DrawerUtils.createPrimaryDrawerItem("Assets Picker", "Specify target assets", ASSETS_PICKER_ITEM));
+		items.add(DrawerUtils.createSectionHeaderDrawerItem(R.string.drawer_section_general, false));
+		items.add(DrawerUtils.createPrimaryDrawerItem(FontAwesome.Icon.faw_crosshairs, R.string.drawer_item_assets_picker_title, R.string.drawer_item_assets_picker_sub_title, ASSETS_PICKER_ITEM));
+		items.add(DrawerUtils.createSectionHeaderDrawerItem(R.string.drawer_section_more, true));
+		items.add(DrawerUtils.createPrimaryDrawerItem(FontAwesome.Icon.faw_github, R.string.drawer_item_github, 0, GITHUB_ITEM));
+		items.add(DrawerUtils.createPrimaryDrawerItem(FontAwesome.Icon.faw_cogs, R.string.drawer_item_settings, 0, SETTINGS_ITEM));
 		return items;
 	}
 

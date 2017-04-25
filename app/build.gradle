@@ -35,6 +35,9 @@ dependencies {
         transitive = true
     }
 
+    compile "com.mikepenz:google-material-typeface:${rootProject.ext.googleMaterialTypeFaceLibraryVersion}@aar"
+    compile "com.mikepenz:fontawesome-typeface:${rootProject.ext.fontAwesomeTypefaceLibraryVersion}@aar"
+
     compile "net.grandcentrix.thirtyinch:thirtyinch:${rootProject.ext.thirtyInchLibraryVersion}"
     compile "com.nbsp:library:${rootProject.ext.filePickerLibraryVersion}"
     compile "com.afollestad.material-dialogs:core:${rootProject.ext.materialDialogsLibraryVersion}"
