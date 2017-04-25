@@ -23,6 +23,7 @@ import com.afollestad.materialdialogs.folderselector.FileChooserDialog;
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
+import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.Drawer;
@@ -105,6 +106,18 @@ public class MainActivity extends AppCompatActivity
 
 	@ViewById(R.id.floating_action_menu)
 	FloatingActionMenu floatingActionMenu;
+
+	@ViewById(R.id.fab_add_overlay)
+	FloatingActionButton fabAddOverlay;
+
+	@ViewById(R.id.fab_add_audio)
+	FloatingActionButton fabAddAudio;
+
+	@ViewById(R.id.fab_add_boot_animation)
+	FloatingActionButton fabAddBootAnim;
+
+	@ViewById(R.id.fab_add_font)
+	FloatingActionButton fabAddFont;
 
 	private Drawer drawer;
 	private FileChooserType fileChooserType = FileChooserType.IGNORE;
@@ -248,6 +261,7 @@ public class MainActivity extends AppCompatActivity
 		}
 
 		drawer = drawerUtils.createDrawer(this, toolbar, THEME_PACKAGER_ITEM, this, getDrawerItems());
+		setCorrectFabColor();
 	}
 
 	@Override
@@ -274,6 +288,7 @@ public class MainActivity extends AppCompatActivity
 	protected void onResume() {
 		super.onResume();
 		deviceUtils.setNavigationBarColor(this);
+		setCorrectFabColor();
 	}
 
 	@Click({R.id.fab_add_font, R.id.fab_add_boot_animation, R.id.fab_add_audio, R.id.fab_add_overlay})
@@ -428,6 +443,28 @@ public class MainActivity extends AppCompatActivity
 				return 0;
 			}
 		}).collect(Collectors.toList());
+	}
+
+	private void setCorrectFabColor() {
+		floatingActionMenu.setMenuButtonColorNormal(ThemeUtils.getAccentColorForTheme(this));
+		floatingActionMenu.setMenuButtonColorPressed(ThemeUtils.getAccentColorForTheme(this));
+		floatingActionMenu.setMenuButtonColorRipple(ThemeUtils.getAccentColorForTheme(this));
+
+		fabAddOverlay.setColorNormal(ThemeUtils.getAccentColorForTheme(this));
+		fabAddOverlay.setColorRipple(ThemeUtils.getAccentColorForTheme(this));
+		fabAddOverlay.setColorPressed(ThemeUtils.getAccentColorForTheme(this));
+
+		fabAddAudio.setColorNormal(ThemeUtils.getAccentColorForTheme(this));
+		fabAddAudio.setColorRipple(ThemeUtils.getAccentColorForTheme(this));
+		fabAddAudio.setColorPressed(ThemeUtils.getAccentColorForTheme(this));
+
+		fabAddBootAnim.setColorNormal(ThemeUtils.getAccentColorForTheme(this));
+		fabAddBootAnim.setColorRipple(ThemeUtils.getAccentColorForTheme(this));
+		fabAddBootAnim.setColorPressed(ThemeUtils.getAccentColorForTheme(this));
+
+		fabAddFont.setColorNormal(ThemeUtils.getAccentColorForTheme(this));
+		fabAddFont.setColorRipple(ThemeUtils.getAccentColorForTheme(this));
+		fabAddFont.setColorPressed(ThemeUtils.getAccentColorForTheme(this));
 	}
 
 }

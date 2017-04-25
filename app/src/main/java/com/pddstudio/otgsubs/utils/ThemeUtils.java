@@ -69,5 +69,16 @@ public class ThemeUtils {
 		return color;
 	}
 
+	@ColorInt
+	public static int getAccentColorForTheme(Activity activity) {
+		TypedValue typedValue = new TypedValue();
+
+		TypedArray a = activity.obtainStyledAttributes(typedValue.data, new int[]{R.attr.colorAccent});
+		int color = a.getColor(0, 0);
+
+		a.recycle();
+
+		return color;
+	}
 
 }
