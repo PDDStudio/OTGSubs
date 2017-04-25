@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,11 +25,7 @@ import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
 import com.github.clans.fab.FloatingActionMenu;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
-import com.mikepenz.materialdrawer.AccountHeader;
-import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
-import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.pddstudio.otgsubs.adapters.AssetsPageAdapter;
 import com.pddstudio.otgsubs.events.AssetTypeAddedEvent;
@@ -37,7 +34,10 @@ import com.pddstudio.otgsubs.events.RefreshItemListEvent;
 import com.pddstudio.otgsubs.models.FileChooserType;
 import com.pddstudio.otgsubs.services.ImportApkService;
 import com.pddstudio.otgsubs.services.PackageService;
+import com.pddstudio.otgsubs.utils.DeviceUtils;
 import com.pddstudio.otgsubs.utils.DrawerUtils;
+import com.pddstudio.otgsubs.utils.Preferences_;
+import com.pddstudio.otgsubs.utils.ThemeUtils;
 import com.pddstudio.substratum.packager.ApkExtractor;
 import com.pddstudio.substratum.packager.models.ApkInfo;
 import com.pddstudio.substratum.packager.models.AssetFileInfo;
@@ -47,10 +47,12 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.Receiver;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
@@ -62,14 +64,17 @@ import java8.util.stream.StreamSupport;
 
 @EActivity(R.layout.activity_main)
 @OptionsMenu(R.menu.menu_main)
-public class MainActivity extends AppCompatActivity implements FolderChooserDialog.FolderCallback, FileChooserDialog.FileCallback, MaterialSimpleListAdapter.Callback {
+public class MainActivity extends AppCompatActivity
+		implements FolderChooserDialog.FolderCallback, FileChooserDialog.FileCallback, MaterialSimpleListAdapter.Callback, Drawer.OnDrawerItemClickListener {
 
-	private static final int      REQUEST_PERMISSIONS  = 42;
-	private static final String[] REQUIRED_PERMISSIONS = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+	private static final int      REQUEST_PERMISSIONS   = 42;
+	private static final int      SETTINGS_REQUEST_CODE = 69;
+	private static final String[] REQUIRED_PERMISSIONS  = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
-	private static final int ASSETS_PICKER_ITEM = 88;
-	private static final int GITHUB_ITEM = 89;
-	private static final int SETTINGS_ITEM = 90;
+	private static final int THEME_PACKAGER_ITEM = 88;
+	private static final int GITHUB_ITEM         = 89;
+	private static final int SETTINGS_ITEM       = 90;
+	private static final int ABOUT_ITEM          = 91;
 
 	@Bean
 	EventBusBean eventBus;
@@ -79,6 +84,15 @@ public class MainActivity extends AppCompatActivity implements FolderChooserDial
 
 	@Bean
 	ApkExtractor apkExtractor;
+
+	@Bean
+	DeviceUtils deviceUtils;
+
+	@Bean
+	DrawerUtils drawerUtils;
+
+	@Pref
+	Preferences_ preferences;
 
 	@ViewById(R.id.toolbar)
 	Toolbar toolbar;
@@ -94,14 +108,16 @@ public class MainActivity extends AppCompatActivity implements FolderChooserDial
 
 	private Drawer drawer;
 	private FileChooserType fileChooserType = FileChooserType.IGNORE;
-	private AssetsType assetsType;
+	private AssetsType     assetsType;
 	private MaterialDialog loadingDialog;
+
+	private int currentSelection;
 
 	@Override
 	public void onBackPressed() {
 		if (drawer.isDrawerOpen()) {
 			drawer.closeDrawer();
-		} else if(floatingActionMenu.isOpened()) {
+		} else if (floatingActionMenu.isOpened()) {
 			floatingActionMenu.close(true);
 		} else {
 			super.onBackPressed();
@@ -138,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements FolderChooserDial
 
 	@Subscribe
 	public void onRefreshEventReceived(RefreshItemListEvent event) {
-		if(event != null && loadingDialog != null && loadingDialog.isShowing()) {
+		if (event != null && loadingDialog != null && loadingDialog.isShowing()) {
 			loadingDialog.dismiss();
 		}
 	}
@@ -172,20 +188,52 @@ public class MainActivity extends AppCompatActivity implements FolderChooserDial
 	public void onMaterialListItemSelected(MaterialDialog dialog, int index, MaterialSimpleListItem item) {
 		Log.d("ListAdapter", "Item selected: " + item.getContent());
 		ApkInfo selectedApk = ((ApkInfo) item.getTag());
-		if(selectedApk != null) {
+		if (selectedApk != null) {
 			ImportApkService.processImportRequest(MainActivity.this, selectedApk);
-			loadingDialog = new MaterialDialog.Builder(this)
-					.title(R.string.dialog_extract_assets_title)
-					.content(R.string.dialog_extract_assets_content, selectedApk.getAppName())
-					.progress(true, -1)
-					.cancelable(false)
-					.canceledOnTouchOutside(false)
-					.autoDismiss(false)
-					.show();
+			loadingDialog = new MaterialDialog.Builder(this).title(R.string.dialog_extract_assets_title)
+															.content(R.string.dialog_extract_assets_content, selectedApk.getAppName())
+															.progress(true, -1)
+															.cancelable(false)
+															.canceledOnTouchOutside(false)
+															.autoDismiss(false)
+															.show();
 		} else {
 			Toast.makeText(this, "Unable to process selected Application...", Toast.LENGTH_SHORT).show();
 		}
 		dialog.dismiss();
+	}
+
+	@Override
+	public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+		if (drawerItem != null) {
+
+			int id = (int) drawerItem.getIdentifier();
+
+			if (id == currentSelection) {
+				drawer.closeDrawer();
+				return true;
+			}
+
+			switch ((int) drawerItem.getIdentifier()) {
+				case ABOUT_ITEM:
+					//AboutActivity.open(this);
+					break;
+				case SETTINGS_ITEM:
+					SettingsActivity.open(this, SETTINGS_REQUEST_CODE);
+					break;
+			}
+			if (drawerItem.getIdentifier() != SETTINGS_ITEM && drawerItem.getIdentifier() != GITHUB_ITEM) {
+				switchPageForDrawerSelection(id);
+				currentSelection = (int) drawerItem.getIdentifier();
+			}
+			if (drawer != null) {
+				drawer.closeDrawer();
+			}
+			return true;
+		}
+		drawer.closeDrawer();
+		return false;
+
 	}
 
 	@AfterViews
@@ -196,40 +244,10 @@ public class MainActivity extends AppCompatActivity implements FolderChooserDial
 		if (!hasRequiredPermissions()) {
 			checkPermissions();
 		} else {
-			switchPageForDrawerSelection(ASSETS_PICKER_ITEM);
+			switchPageForDrawerSelection(THEME_PACKAGER_ITEM);
 		}
 
-		AccountHeader drawerHeader = new AccountHeaderBuilder().withActivity(this)
-															   .addProfiles(new ProfileDrawerItem().withName("OpenCamera Showcase").withEmail("Various implementations of Camera2 API."))
-															   .withHeaderBackground(R.color.colorPrimary)
-															   .withSelectionListEnabled(false)
-															   .withSelectionListEnabledForSingleProfile(false)
-															   .withAlternativeProfileHeaderSwitching(false)
-															   .withOnlyMainProfileImageVisible(true)
-															   .build();
-
-		drawer = new DrawerBuilder().withActivity(this)
-									.withToolbar(toolbar)
-									.withAccountHeader(drawerHeader)
-									.withActionBarDrawerToggle(true)
-									.withActionBarDrawerToggleAnimated(true)
-									.withCloseOnClick(true)
-									.withDrawerItems(getDrawerItems())
-									.withOnDrawerItemClickListener((view, position, drawerItem) -> {
-										int id = (int) drawerItem.getIdentifier();
-										switchPageForDrawerSelection(id);
-										if (drawer != null && drawer.isDrawerOpen()) {
-											drawer.closeDrawer();
-											return true;
-										} else {
-											return false;
-										}
-									})
-									.withCloseOnClick(true)
-									.withDelayOnDrawerClose(150)
-									.withSelectedItem(ASSETS_PICKER_ITEM)
-									.withFireOnInitialOnClick(true)
-									.build();
+		drawer = drawerUtils.createDrawer(this, toolbar, THEME_PACKAGER_ITEM, this, getDrawerItems());
 	}
 
 	@Override
@@ -244,6 +262,18 @@ public class MainActivity extends AppCompatActivity implements FolderChooserDial
 		packageInfoBean.unregister();
 		eventBus.unregister(this);
 		super.onStop();
+	}
+
+	@Override
+	protected void onCreate(@Nullable Bundle savedInstanceState) {
+		ThemeUtils.applySelectedTheme(this);
+		super.onCreate(savedInstanceState);
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		deviceUtils.setNavigationBarColor(this);
 	}
 
 	@Click({R.id.fab_add_font, R.id.fab_add_boot_animation, R.id.fab_add_audio, R.id.fab_add_overlay})
@@ -294,20 +324,29 @@ public class MainActivity extends AppCompatActivity implements FolderChooserDial
 		boolean packagingSuccess = intent.getBooleanExtra(PackageService.EXTRA_PACKAGING_DONE_STATUS, false);
 		String apkPath = intent.getStringExtra(PackageService.EXTRA_PACKAGING_DONE_FILE);
 		toggleLoadingDialog(false);
-		if(packagingSuccess) {
+		if (packagingSuccess) {
 			Toast.makeText(this, "APK Created: " + apkPath, Toast.LENGTH_LONG).show();
 		} else {
 			Toast.makeText(this, "Failed to create APK!", Toast.LENGTH_LONG).show();
 		}
 	}
 
+	@OnActivityResult(SETTINGS_REQUEST_CODE)
+	void onResult() {
+		if (preferences.themeChanged().get()) {
+			ThemeUtils.restartActivity(this);
+			preferences.themeChanged().put(false);
+		}
+	}
+
 	private List<IDrawerItem> getDrawerItems() {
 		List<IDrawerItem> items = new ArrayList<>();
-		items.add(DrawerUtils.createSectionHeaderDrawerItem(R.string.drawer_section_general, false));
-		items.add(DrawerUtils.createPrimaryDrawerItem(FontAwesome.Icon.faw_crosshairs, R.string.drawer_item_assets_picker_title, R.string.drawer_item_assets_picker_sub_title, ASSETS_PICKER_ITEM));
-		items.add(DrawerUtils.createSectionHeaderDrawerItem(R.string.drawer_section_more, true));
-		items.add(DrawerUtils.createPrimaryDrawerItem(FontAwesome.Icon.faw_github, R.string.drawer_item_github, 0, GITHUB_ITEM));
-		items.add(DrawerUtils.createPrimaryDrawerItem(FontAwesome.Icon.faw_cogs, R.string.drawer_item_settings, 0, SETTINGS_ITEM));
+		items.add(drawerUtils.createSectionHeaderDrawerItem(R.string.drawer_section_general, false));
+		items.add(drawerUtils.createPrimaryDrawerItem(this, FontAwesome.Icon.faw_crosshairs, R.string.drawer_item_packager_title, R.string.drawer_item_packager_subtitle, THEME_PACKAGER_ITEM, true));
+		items.add(drawerUtils.createSectionHeaderDrawerItem(R.string.drawer_section_more, true));
+		items.add(drawerUtils.createPrimaryDrawerItem(this, FontAwesome.Icon.faw_github, R.string.drawer_item_github, 0, GITHUB_ITEM, false));
+		items.add(drawerUtils.createPrimaryDrawerItem(this, FontAwesome.Icon.faw_info, R.string.drawer_item_about, 0, ABOUT_ITEM, false));
+		items.add(drawerUtils.createPrimaryDrawerItem(this, FontAwesome.Icon.faw_cogs, R.string.drawer_item_settings, 0, SETTINGS_ITEM, false));
 		return items;
 	}
 
@@ -341,7 +380,7 @@ public class MainActivity extends AppCompatActivity implements FolderChooserDial
 
 	private void switchPageForDrawerSelection(int drawerItemId) {
 		switch (drawerItemId) {
-			case ASSETS_PICKER_ITEM:
+			case THEME_PACKAGER_ITEM:
 			default:
 				viewPager.setAdapter(new AssetsPageAdapter(this, getSupportFragmentManager()));
 				tabLayout.setupWithViewPager(viewPager, true);
@@ -350,17 +389,16 @@ public class MainActivity extends AppCompatActivity implements FolderChooserDial
 	}
 
 	private void toggleLoadingDialog(boolean showDialog) {
-		if(showDialog) {
-			loadingDialog = new MaterialDialog.Builder(this)
-					.title(R.string.dialog_packaging_title)
-					.content(R.string.dialog_packaging_content)
-					.progress(true, -1)
-					.cancelable(false)
-					.canceledOnTouchOutside(false)
-					.autoDismiss(false)
-					.show();
+		if (showDialog) {
+			loadingDialog = new MaterialDialog.Builder(this).title(R.string.dialog_packaging_title)
+															.content(R.string.dialog_packaging_content)
+															.progress(true, -1)
+															.cancelable(false)
+															.canceledOnTouchOutside(false)
+															.autoDismiss(false)
+															.show();
 		} else {
-			if(loadingDialog != null && loadingDialog.isShowing()) {
+			if (loadingDialog != null && loadingDialog.isShowing()) {
 				loadingDialog.dismiss();
 			}
 			loadingDialog = null;
@@ -372,7 +410,7 @@ public class MainActivity extends AppCompatActivity implements FolderChooserDial
 			MaterialSimpleListItem.Builder builder = new MaterialSimpleListItem.Builder(this);
 			try {
 				Drawable icon = getPackageManager().getApplicationIcon(apkInfo.getPackageName());
-				if(icon != null) {
+				if (icon != null) {
 					builder.icon(icon);
 				}
 			} catch (PackageManager.NameNotFoundException e) {
@@ -384,7 +422,7 @@ public class MainActivity extends AppCompatActivity implements FolderChooserDial
 		}).sorted((item1, item2) -> {
 			ApkInfo app1 = ((ApkInfo) item1.getTag());
 			ApkInfo app2 = ((ApkInfo) item2.getTag());
-			if(app1 != null && app2 != null) {
+			if (app1 != null && app2 != null) {
 				return app1.getAppName().toLowerCase().compareTo(app2.getAppName().toLowerCase());
 			} else {
 				return 0;

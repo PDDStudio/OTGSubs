@@ -13,7 +13,6 @@
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
 		android:theme="@style/AppTheme">
-
 		<activity android:name=".MainActivity_">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
@@ -22,10 +21,13 @@
 			</intent-filter>
 		</activity>
 
-		<service android:name=".services.PackageService_"
-			android:exported="false" />
+		<activity android:name=".SettingsActivity_" />
 
-		<service android:name=".services.ImportApkService_"
+		<service
+			android:name=".services.PackageService_"
+			android:exported="false" />
+		<service
+			android:name=".services.ImportApkService_"
 			android:exported="false" />
 
 	</application>

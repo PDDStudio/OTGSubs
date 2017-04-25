@@ -10,6 +10,30 @@
 		<item name="windowNoTitle">true</item>
 	</style>
 
+	<style name="AppTheme.Blue" parent="AppTheme">
+		<item name="colorPrimary">@color/colorPrimary</item>
+		<item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+		<item name="colorAccent">@color/colorAccent</item>
+	</style>
+
+	<style name="AppTheme.Red" parent="AppTheme">
+		<item name="colorPrimary">@color/colorPrimaryRed</item>
+		<item name="colorPrimaryDark">@color/colorPrimaryDarkRed</item>
+		<item name="colorAccent">@color/colorAccentRed</item>
+	</style>
+
+	<style name="AppTheme.Green" parent="AppTheme">
+		<item name="colorPrimary">@color/colorPrimaryGreen</item>
+		<item name="colorPrimaryDark">@color/colorPrimaryDarkGreen</item>
+		<item name="colorAccent">@color/colorAccentGreen</item>
+	</style>
+
+	<style name="AppTheme.DarkOrange" parent="AppTheme">
+		<item name="colorPrimary">@color/colorPrimaryDarkOrange</item>
+		<item name="colorPrimaryDark">@color/colorPrimaryDarkDarkOrange</item>
+		<item name="colorAccent">@color/colorAccentDarkOrange</item>
+	</style>
+
 	<style name="TextHeader">
 		<item name="android:layout_width">match_parent</item>
 		<item name="android:layout_height">wrap_content</item>

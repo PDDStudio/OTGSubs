@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!-- Settings Strings -->
+	<string name="pref_category_general">General</string>
+	<string name="pref_category_appearance">Appearance</string>
+	<string name="pref_category_misc">Miscellaneous</string>
+
+	<string name="pref_item_tint_nav_bar_title">Enable Navigation Bar Tint</string>
+	<string name="pref_item_tint_nav_bar_summary"><![CDATA[Apply the primary color also to the Navigation Bar.<br /><b>Note:</b> Works only on Android 5.0 and higher.]]></string>
+	<string name="pref_item_app_theme_title">Theme</string>
+	<string name="pref_item_app_theme_summary">Current: %s</string>
+
+	<string name="pref_item_build_info_title">Build Information</string>
+	<string name="pref_item_build_info_summary">Version: %1$s (%2$s)</string>
+
+	<string name="pref_item_crash_reports_title">Crash Reports</string>
+	<string name="pref_item_crash_reports_summary">Automatically collect and send anonymous crash reports. This helps improving the application\'s stability.</string>
+	<!-- Preference Keys -->
+	<string name="pref_item_build_info_key">buildInfo</string>
+	<string name="pref_item_tint_nav_bar_key">tintNavigationBar</string>
+	<string name="pref_item_crash_reports_key">enableCrashReports</string>
+	<string name="pref_item_app_theme_key">applicationTheme</string>
+	<string name="pref_item_app_theme_changed_runtime_key">appThemeChangedRuntime</string>
+	<!-- Settings Items & Values -->
+	<string-array name="pref_theme_strings">
+		<item>Blue</item>
+		<item>Red</item>
+		<item>Green</item>
+		<item>Dark Orange</item>
+	</string-array>
+	<string-array name="pref_theme_values">
+		<item>0</item>
+		<item>1</item>
+		<item>2</item>
+		<item>3</item>
+	</string-array>
+	<string name="title_activity_settings">Settings</string>
+	<string name="title_activity_about">About</string>
+
+</resources>
