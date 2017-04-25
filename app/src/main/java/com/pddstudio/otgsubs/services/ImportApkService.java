@@ -68,9 +68,24 @@ public class ImportApkService extends AbstractIntentService {
 
 	private void sendEvent(File cachedAssetsFile) {
 		File overlayDir = new File(cachedAssetsFile, OVERLAYS_DIR);
+		if(!overlayDir.exists()) {
+			overlayDir.mkdirs();
+		}
+
 		File fontsDir = new File(cachedAssetsFile, FONTS_DIR);
+		if(!fontsDir.exists()) {
+			fontsDir.mkdirs();
+		}
+
 		File audioDir = new File(cachedAssetsFile, AUDIO_DIR);
+		if(!audioDir.exists()) {
+			audioDir.mkdirs();
+		}
+
 		File bootAnimationDir = new File(cachedAssetsFile, BOOT_ANIMATION_DIR);
+		if(!bootAnimationDir.exists()) {
+			bootAnimationDir.mkdirs();
+		}
 
 		Collection<File> overlays = FileUtils.listFiles(overlayDir, null, true);
 		Collection<File> fonts = FileUtils.listFiles(fontsDir, null, true);
