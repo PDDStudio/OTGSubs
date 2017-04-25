@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 import com.pddstudio.otgsubs.EventBusBean;
@@ -13,6 +14,7 @@ import com.pddstudio.otgsubs.R;
 import com.pddstudio.otgsubs.events.AssetTypeAddedEvent;
 import com.pddstudio.otgsubs.events.RefreshItemListEvent;
 import com.pddstudio.otgsubs.models.AssetsAdapterItem;
+import com.pddstudio.otgsubs.views.EmptyAssetsView;
 import com.pddstudio.substratum.packager.models.AssetFileInfo;
 import com.pddstudio.substratum.packager.models.AssetsType;
 
@@ -56,14 +58,25 @@ public class AssetsListFragment extends Fragment {
 	@ViewById(R.id.swipe_refresh_layout)
 	protected SwipeRefreshLayout refreshLayout;
 
+	@ViewById(R.id.empty_assets_view)
+	EmptyAssetsView emptyAssetsView;
+
 	private FastItemAdapter<AssetsAdapterItem> assetsAdapter;
 
 	private boolean isAssetInfoPresent(AssetFileInfo fileInfo) {
 		return StreamSupport.stream(assetsAdapter.getAdapterItems()).filter(file -> file.getAssetFileInfo().getFileLocation().equals(fileInfo.getFileLocation())).findAny().isPresent();
 	}
 
+	private void toggleEmptyViewIfRequired() {
+		if(assetsAdapter != null) {
+			emptyAssetsView.setViewVisible(assetsAdapter.getAdapterItems().isEmpty());
+			emptyAssetsView.setVisibility(assetsAdapter.getAdapterItems().isEmpty() ? View.VISIBLE : View.GONE);
+		}
+	}
+
 	@AfterViews
 	protected void setupFragment() {
+		emptyAssetsView.setEmptyText(R.string.empty_assets_text, getString(assetsType.getTitleRes()));
 		assetsAdapter = new FastItemAdapter<>();
 		assetsRecyclerView.setAdapter(assetsAdapter);
 		assetsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -72,6 +85,7 @@ public class AssetsListFragment extends Fragment {
 		if (info != null && !info.isEmpty()) {
 			StreamSupport.stream(info).map(AssetsAdapterItem::new).forEach(assetsAdapter::add);
 		}
+		toggleEmptyViewIfRequired();
 	}
 
 	public String getPageTitle() {
@@ -96,6 +110,7 @@ public class AssetsListFragment extends Fragment {
 			AssetsAdapterItem adapterItem = new AssetsAdapterItem(event.getAssetFileInfo());
 			assetsAdapter.add(adapterItem);
 		}
+		toggleEmptyViewIfRequired();
 	}
 
 	@Subscribe(threadMode = ThreadMode.MAIN)
@@ -105,6 +120,7 @@ public class AssetsListFragment extends Fragment {
 		if (info != null && !info.isEmpty()) {
 			StreamSupport.stream(info).map(AssetsAdapterItem::new).forEach(assetsAdapter::add);
 		}
+		toggleEmptyViewIfRequired();
 	}
 
 }
