@@ -51,3 +51,6 @@ app/google-services.json
 .externalNativeBuild
 .idea/vcs.xml
 .idea/misc.xml
+
+.idea/instapk.xml
+instapk.log*
