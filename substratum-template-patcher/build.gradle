@@ -30,4 +30,5 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile "com.google.code.gson:gson:${rootProject.ext.gsonLibraryVersion}"
     compile "commons-io:commons-io:${rootProject.ext.commonsIoLibraryVersion}"
+    compile "com.github.pddstudio:phrase-java:${rootProject.ext.phraseJavaLibraryVersion}"
 }
