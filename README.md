@@ -16,5 +16,5 @@ The project contains two modules:
 
 ### Author
 
-Patrick Jung [<patrick.pddstudio@gmail.com>](mailto:patrick.pddstudio@gmail.com)
-Google+ [Profile](https://plus.google.com/+PatrickJung42)
+* Patrick Jung [<patrick.pddstudio@gmail.com>](mailto:patrick.pddstudio@gmail.com)
+* Google+ [Profile](https://plus.google.com/+PatrickJung42)
