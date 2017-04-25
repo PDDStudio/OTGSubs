@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<PreferenceCategory
+		android:title="@string/pref_category_general">
+
+		<EditTextPreference
+			android:key="@string/pref_item_build_info_key"
+			android:title="@string/pref_item_build_info_title"
+			android:summary="@string/pref_item_build_info_summary"
+			android:enabled="false"/>
+
+	</PreferenceCategory>
+
+	<PreferenceCategory
+		android:title="@string/pref_category_appearance">
+
+		<ListPreference
+			android:entries="@array/pref_theme_strings"
+			android:entryValues="@array/pref_theme_values"
+			android:key="@string/pref_item_app_theme_key"
+			android:summary="@string/pref_item_app_theme_summary"
+			android:title="@string/pref_item_app_theme_title"/>
+
+		<CheckBoxPreference
+			android:key="@string/pref_item_tint_nav_bar_key"
+			android:summary="@string/pref_item_tint_nav_bar_summary"
+			android:title="@string/pref_item_tint_nav_bar_title"/>
+
+	</PreferenceCategory>
+
+	<PreferenceCategory
+		android:title="@string/pref_category_misc">
+
+		<CheckBoxPreference
+			android:key="@string/pref_item_crash_reports_key"
+			android:summary="@string/pref_item_crash_reports_summary"
+			android:title="@string/pref_item_crash_reports_title"/>
+
+	</PreferenceCategory>
+
+</PreferenceScreen>

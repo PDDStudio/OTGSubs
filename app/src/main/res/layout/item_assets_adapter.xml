@@ -24,14 +24,15 @@
 			android:foreground="?android:selectableItemBackground"
 			android:descendantFocusability="blocksDescendants">
 
-			<ImageView
+			<com.mikepenz.iconics.view.IconicsImageView
 				android:id="@+id/assets_item_icon"
-				android:layout_height="wrap_content"
-				android:layout_width="wrap_content"
+				android:layout_height="50dp"
+				android:layout_width="50dp"
 				android:adjustViewBounds="true"
 				android:maxWidth="50dp"
 				android:maxHeight="50dp"
 				android:scaleType="centerCrop"
+				android:layout_gravity="center_vertical"
 				android:src="@mipmap/ic_launcher" />
 
 			<LinearLayout

@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+	<!-- colors for AppTheme.Blue -->
 	<color name="colorPrimary">#3F51B5</color>
 	<color name="colorPrimaryDark">#303F9F</color>
 	<color name="colorAccent">#FF4081</color>
-	<color name="colorAccentDark">#FF3099</color>
+	<!-- colors for AppTheme.Red -->
+	<color name="colorPrimaryRed">#F44336</color>
+	<color name="colorPrimaryDarkRed">#D32F2F</color>
+	<color name="colorAccentRed">#607D8B</color>
+	<!-- colors for AppTheme.Green -->
+	<color name="colorPrimaryGreen">#4CAF50</color>
+	<color name="colorPrimaryDarkGreen">#388E3C</color>
+	<color name="colorAccentGreen">#795548</color>
+	<!-- colors for AppTheme.DarkOrange -->
+	<color name="colorPrimaryDarkOrange">#FF9800</color>
+	<color name="colorPrimaryDarkDarkOrange">#F57C00</color>
+	<color name="colorAccentDarkOrange">#9E9E9E</color>
+
+	<color name="black_overlay">#66000000</color>
+
 </resources>

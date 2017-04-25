@@ -42,7 +42,7 @@ dependencies {
     compile "com.nbsp:library:${rootProject.ext.filePickerLibraryVersion}"
     compile "com.afollestad.material-dialogs:core:${rootProject.ext.materialDialogsLibraryVersion}"
     compile "com.afollestad.material-dialogs:commons:${rootProject.ext.materialDialogsLibraryVersion}"
-    compile ("com.mikepenz:fastadapter:${rootProject.ext.fastAdapterLibraryVersion}@aar") {
+    compile("com.mikepenz:fastadapter:${rootProject.ext.fastAdapterLibraryVersion}@aar") {
         transitive = true
     }
     compile "com.mikepenz:fastadapter-commons:${rootProject.ext.fastAdapterLibraryVersion}@aar"
@@ -53,8 +53,12 @@ dependencies {
     compile "org.greenrobot:eventbus:${rootProject.ext.eventBusLibraryVersion}"
     compile "com.github.clans:fab:${rootProject.ext.fabLibraryVersion}"
 
+    compile "com.google.firebase:firebase-crash:${rootProject.ext.firebaseLibraryVersion}"
 
     annotationProcessor "org.androidannotations:androidannotations:${rootProject.ext.androidAnnotationsVersion}"
     compile "org.androidannotations:androidannotations-api:${rootProject.ext.androidAnnotationsVersion}"
     compile project(':substratum-packager')
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
 }
+
+apply plugin: 'com.google.gms.google-services'

@@ -44,6 +44,9 @@ captures/
 # Keystore files
 *.jks
 
+# Google Firebase Configuration
+app/google-services.json
+
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
 .idea/vcs.xml

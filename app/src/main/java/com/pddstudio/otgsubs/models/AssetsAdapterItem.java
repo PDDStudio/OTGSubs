@@ -2,13 +2,19 @@ package com.pddstudio.otgsubs.models;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mikepenz.fastadapter.items.AbstractItem;
+import com.mikepenz.fontawesome_typeface_library.FontAwesome;
+import com.mikepenz.iconics.typeface.IIcon;
+import com.mikepenz.iconics.view.IconicsImageView;
 import com.pddstudio.otgsubs.R;
 import com.pddstudio.substratum.packager.models.AssetFileInfo;
+import com.pddstudio.substratum.packager.models.AssetsType;
 
+import org.apache.commons.io.FilenameUtils;
+
+import java.io.File;
 import java.util.List;
 
 /**
@@ -21,6 +27,24 @@ public class AssetsAdapterItem extends AbstractItem<AssetsAdapterItem, AssetsAda
 
 	public AssetsAdapterItem(AssetFileInfo fileInfo) {
 		this.fileInfo = fileInfo;
+	}
+
+	private IIcon getIconForAssetsInfo() {
+		if (fileInfo.getType().equals(AssetsType.AUDIO)) {
+			return FontAwesome.Icon.faw_file_audio_o;
+		} else if(new File(fileInfo.getFileLocation()).isDirectory()) {
+			return FontAwesome.Icon.faw_folder;
+		}
+		String extension = FilenameUtils.getExtension(fileInfo.getFileName());
+		if(extension.equals("jpg") || extension.equals("png")) {
+			return FontAwesome.Icon.faw_file_image_o;
+		} else if (extension.equals("xml")) {
+			return FontAwesome.Icon.faw_file_code_o;
+		} else if (extension.equals("zip")) {
+			return FontAwesome.Icon.faw_file_archive_o;
+		} else {
+			return FontAwesome.Icon.faw_file_o;
+		}
 	}
 
 	public AssetFileInfo getAssetFileInfo() {
@@ -47,6 +71,7 @@ public class AssetsAdapterItem extends AbstractItem<AssetsAdapterItem, AssetsAda
 		super.bindView(holder, payloads);
 		holder.assetFileName.setText(fileInfo.getFileName());
 		holder.assetFileLocation.setText(fileInfo.getFileLocation());
+		holder.itemIcon.setIcon(getIconForAssetsInfo());
 	}
 
 	@Override
@@ -58,13 +83,13 @@ public class AssetsAdapterItem extends AbstractItem<AssetsAdapterItem, AssetsAda
 
 	protected static class ViewHolder extends RecyclerView.ViewHolder {
 
-		protected ImageView itemIcon;
-		protected TextView assetFileName;
-		protected TextView assetFileLocation;
+		protected IconicsImageView itemIcon;
+		protected TextView         assetFileName;
+		protected TextView         assetFileLocation;
 
 		public ViewHolder(View itemView) {
 			super(itemView);
-			itemIcon = (ImageView) itemView.findViewById(R.id.assets_item_icon);
+			itemIcon = (IconicsImageView) itemView.findViewById(R.id.assets_item_icon);
 			assetFileName = (TextView) itemView.findViewById(R.id.assets_item_name);
 			assetFileLocation = (TextView) itemView.findViewById(R.id.assets_item_location);
 		}
