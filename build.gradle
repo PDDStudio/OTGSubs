@@ -47,7 +47,7 @@ ext {
     materializeLibraryVersion = "1.0.1"
     googleMaterialTypeFaceLibraryVersion = "3.0.1.0.original"
     fontAwesomeTypefaceLibraryVersion = "4.7.0.0"
-    phraseJavaLibraryVersion = "v1.0.0"
+    phraseJavaLibraryVersion = "1.0.1"
 }
 
 task clean(type: Delete) {
