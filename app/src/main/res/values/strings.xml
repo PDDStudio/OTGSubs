@@ -28,4 +28,6 @@
 	<string name="empty_assets_text">No %1$s specified for Theme!</string>
 	<string name="drawer_header">OTGSubs</string>
 	<string name="drawer_header_subtitle">Create Substratum Themes on your Device.</string>
+	<string name="dialog_modify_item_title">Modify \'%1$s\'</string>
+	<string name="dialog_rename_file_title">Rename \'%1$s\'</string>
 </resources>

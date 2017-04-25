@@ -3,6 +3,7 @@ package com.pddstudio.otgsubs;
 import android.support.annotation.NonNull;
 
 import com.pddstudio.otgsubs.events.AssetTypeAddedEvent;
+import com.pddstudio.otgsubs.events.ExistingAssetsItemEvent;
 import com.pddstudio.otgsubs.events.ImportAssetsFromApkEvent;
 import com.pddstudio.otgsubs.events.RefreshItemListEvent;
 import com.pddstudio.substratum.packager.models.AssetFileInfo;
@@ -13,6 +14,7 @@ import org.androidannotations.annotations.EBean;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,6 +71,26 @@ public class PackageInfoBean {
 		}
 	}
 
+	private void removeItemIfPresent(AssetFileInfo assetFileInfo) {
+		StreamSupport.stream(getExistingInformation(assetFileInfo.getType())).forEach(assetFileInfo1 -> {
+			if(assetFileInfo1.getFileLocation().equals(assetFileInfo.getFileLocation())) {
+				getExistingInformation(assetFileInfo.getType()).remove(assetFileInfo1);
+			}
+		});
+	}
+
+	private void renameItemIfPresent(AssetFileInfo assetFileInfo, String newFileName) {
+		StreamSupport.stream(getExistingInformation(assetFileInfo.getType())).filter(info -> info.getFileLocation().equals(assetFileInfo.getFileLocation())).findAny().ifPresent(oldInfo -> {
+			if(oldInfo.getRelativeAssetsDestinationLocation() != null) {
+				String parent = new File(oldInfo.getRelativeAssetsDestinationLocation()).getParent();
+				File newFile = new File(parent, newFileName);
+				oldInfo.setRelativeAssetsDestinationLocation(newFile.getAbsolutePath());
+			} else {
+				oldInfo.setFileName(newFileName);
+			}
+		});
+	}
+
 	void register() {
 		eventBusBean.register(this);
 	}
@@ -90,6 +112,21 @@ public class PackageInfoBean {
 	public void onImportEventReceived(ImportAssetsFromApkEvent event) {
 		if(event != null) {
 			StreamSupport.stream(event.getAssets()).forEach(this::storeAssetFileInfo);
+			eventBusBean.post(new RefreshItemListEvent());
+		}
+	}
+
+	@Subscribe
+	public void onExistingAssetsModifiedEventReceived(ExistingAssetsItemEvent event) {
+		if(event != null) {
+			switch (event.getModificationType()) {
+				case DELETE:
+					removeItemIfPresent(event.getAssetFileInfo());
+					break;
+				case RENAME:
+					renameItemIfPresent(event.getAssetFileInfo(), event.getNewName());
+					break;
+			}
 			eventBusBean.post(new RefreshItemListEvent());
 		}
 	}

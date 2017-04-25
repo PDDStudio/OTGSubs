@@ -38,4 +38,8 @@ public class AssetFileInfo implements Serializable {
 	public void setRelativeAssetsDestinationLocation(String relativeAssetsDestinationLocation) {
 		this.relativeAssetsDestinationLocation = relativeAssetsDestinationLocation;
 	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
 }
