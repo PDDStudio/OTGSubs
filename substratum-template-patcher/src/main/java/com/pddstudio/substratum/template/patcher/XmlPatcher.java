@@ -1,5 +1,7 @@
 package com.pddstudio.substratum.template.patcher;
 
+import android.util.Log;
+
 import com.pddstudio.phrase.java.Phrase;
 import com.pddstudio.substratum.template.patcher.internal.LinePatcher;
 
@@ -8,6 +10,8 @@ import com.pddstudio.substratum.template.patcher.internal.LinePatcher;
  */
 
 final class XmlPatcher extends LinePatcher {
+
+	private static final String TAG = XmlPatcher.class.getSimpleName();
 
 	private static XmlPatcher INSTANCE;
 
@@ -22,7 +26,16 @@ final class XmlPatcher extends LinePatcher {
 
 	@Override
 	public String patchLine(String line, String targetKey, String replacementValue) {
-		return Phrase.from(line).put(targetKey, replacementValue).formatString();
+		try {
+			Log.d(TAG, "Patch Line: " + line + " key: " + targetKey + " value: " + replacementValue);
+			String result = Phrase.from(line, Phrase.KeyIdentifier.CURLY_BRACKETS).put(targetKey, replacementValue).formatString();
+			Log.d(TAG, "Patch Succeeded! => " + result);
+			return result;
+		} catch (IllegalArgumentException e) {
+			String replaceLine = line.replace("{" + targetKey + "}", replacementValue);
+			Log.d(TAG, "Patching failed! Replacing legacy => " + replaceLine);
+			return replaceLine;
+		}
 	}
 
 }
