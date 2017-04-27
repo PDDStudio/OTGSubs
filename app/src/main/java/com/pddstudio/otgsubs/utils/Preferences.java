@@ -18,6 +18,9 @@ public interface Preferences {
 	@DefaultBoolean(value = true, keyRes = R.string.pref_item_crash_reports_key)
 	boolean crashReportEnabled();
 
+	@DefaultBoolean(value = true, keyRes = R.string.pref_item_install_build_apk_key)
+	boolean openPackageInstaller();
+
 	@DefaultInt(value = 0, keyRes = R.string.pref_item_app_theme_key)
 	int themeId();
 
