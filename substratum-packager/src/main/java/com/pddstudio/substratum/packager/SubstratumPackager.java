@@ -17,6 +17,7 @@ import org.zeroturnaround.zip.commons.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -233,9 +234,9 @@ public class SubstratumPackager {
 		}
 
 		private void copyResourcesIntoDir(File cacheAssetsRoot) {
-			StreamSupport.stream(requestMap.keySet()).forEach(keySet -> {
-				List<AssetFileInfo> files = requestMap.get(keySet);
-				StreamSupport.stream(files).forEach(assetFileInfo -> {
+			StreamSupport.stream(Collections.synchronizedSet(requestMap.keySet())).forEachOrdered(keySet -> {
+				List<AssetFileInfo> files = Collections.synchronizedList(requestMap.get(keySet));
+				StreamSupport.stream(files).forEachOrdered(assetFileInfo -> {
 					File target = new File(assetFileInfo.getFileLocation());
 					File destDir = cacheAssetsRoot;
 

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -11,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -29,6 +31,7 @@ import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.pddstudio.otgsubs.adapters.AssetsPageAdapter;
+import com.pddstudio.otgsubs.beans.ManifestProcessorBean;
 import com.pddstudio.otgsubs.events.AssetTypeAddedEvent;
 import com.pddstudio.otgsubs.events.FileChooserDialogEvent;
 import com.pddstudio.otgsubs.events.RefreshItemListEvent;
@@ -72,6 +75,7 @@ public class MainActivity extends AppCompatActivity
 	private static final int      SETTINGS_REQUEST_CODE = 69;
 	private static final String[] REQUIRED_PERMISSIONS  = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
+	private static final int THEME_PATCHER_ITEM = 87;
 	private static final int THEME_PACKAGER_ITEM = 88;
 	private static final int GITHUB_ITEM         = 89;
 	private static final int SETTINGS_ITEM       = 90;
@@ -91,6 +95,9 @@ public class MainActivity extends AppCompatActivity
 
 	@Bean
 	DrawerUtils drawerUtils;
+
+	@Bean
+	ManifestProcessorBean manifestProcessor;
 
 	@Pref
 	Preferences_ preferences;
@@ -125,6 +132,7 @@ public class MainActivity extends AppCompatActivity
 	private MaterialDialog loadingDialog;
 
 	private int currentSelection;
+	private boolean isForThemePatching = false;
 
 	@Override
 	public void onBackPressed() {
@@ -201,8 +209,18 @@ public class MainActivity extends AppCompatActivity
 	public void onMaterialListItemSelected(MaterialDialog dialog, int index, MaterialSimpleListItem item) {
 		Log.d("ListAdapter", "Item selected: " + item.getContent());
 		ApkInfo selectedApk = ((ApkInfo) item.getTag());
-		if (selectedApk != null) {
-			ImportApkService.processImportRequest(MainActivity.this, selectedApk);
+		if (selectedApk == null) {
+			Toast.makeText(this, "Unable to process selected Application...", Toast.LENGTH_SHORT).show();
+			dialog.dismiss();
+			return;
+
+		}
+
+		if(isForThemePatching) {
+			isForThemePatching = false;
+			PatcherActivity.open(this, selectedApk);
+		} else {
+			ImportApkService.processImportRequest(this, selectedApk);
 			loadingDialog = new MaterialDialog.Builder(this).title(R.string.dialog_extract_assets_title)
 															.content(R.string.dialog_extract_assets_content, selectedApk.getAppName())
 															.progress(true, -1)
@@ -210,8 +228,6 @@ public class MainActivity extends AppCompatActivity
 															.canceledOnTouchOutside(false)
 															.autoDismiss(false)
 															.show();
-		} else {
-			Toast.makeText(this, "Unable to process selected Application...", Toast.LENGTH_SHORT).show();
 		}
 		dialog.dismiss();
 	}
@@ -237,7 +253,9 @@ public class MainActivity extends AppCompatActivity
 			}
 			if (drawerItem.getIdentifier() != SETTINGS_ITEM && drawerItem.getIdentifier() != GITHUB_ITEM) {
 				switchPageForDrawerSelection(id);
-				currentSelection = (int) drawerItem.getIdentifier();
+				if(((int) drawerItem.getIdentifier()) != THEME_PATCHER_ITEM) {
+					currentSelection = (int) drawerItem.getIdentifier();
+				}
 			}
 			if (drawer != null) {
 				drawer.closeDrawer();
@@ -268,12 +286,10 @@ public class MainActivity extends AppCompatActivity
 	protected void onStart() {
 		super.onStart();
 		eventBus.register(this);
-		packageInfoBean.register();
 	}
 
 	@Override
 	protected void onStop() {
-		packageInfoBean.unregister();
 		eventBus.unregister(this);
 		super.onStop();
 	}
@@ -288,7 +304,14 @@ public class MainActivity extends AppCompatActivity
 	protected void onResume() {
 		super.onResume();
 		deviceUtils.setNavigationBarColor(this);
+		packageInfoBean.register();
 		setCorrectFabColor();
+	}
+
+	@Override
+	protected void onPause() {
+		packageInfoBean.unregister();
+		super.onPause();
 	}
 
 	@Click({R.id.fab_add_font, R.id.fab_add_boot_animation, R.id.fab_add_audio, R.id.fab_add_overlay})
@@ -323,9 +346,8 @@ public class MainActivity extends AppCompatActivity
 
 	@OptionsItem(R.id.menu_import_apk)
 	protected void onImportApkMenuItemSelected() {
-		Toast.makeText(this, "Selected ImportApkMenu", Toast.LENGTH_SHORT).show();
 		MaterialSimpleListAdapter adapter = new MaterialSimpleListAdapter(this);
-		StreamSupport.stream(getApplicationListDialogItems()).forEach(adapter::add);
+		StreamSupport.stream(getApplicationListDialogItems(isForThemePatching ? manifestProcessor.getSupportedThemes() : apkExtractor.getApkInfoList())).forEach(adapter::add);
 		new MaterialDialog.Builder(this).adapter(adapter, null).show();
 	}
 
@@ -334,13 +356,19 @@ public class MainActivity extends AppCompatActivity
 		Toast.makeText(this, "Selected RestoreDefaultsMenu", Toast.LENGTH_SHORT).show();
 	}
 
-	@Receiver(actions = PackageService.ACTION_PACKAGING_DONE, local = true)
+	@Receiver(actions = PackageService.ACTION_PACKAGING_DONE, local = true, registerAt = Receiver.RegisterAt.OnResumeOnPause)
 	protected void onPackagingResultReceived(Intent intent) {
 		boolean packagingSuccess = intent.getBooleanExtra(PackageService.EXTRA_PACKAGING_DONE_STATUS, false);
 		String apkPath = intent.getStringExtra(PackageService.EXTRA_PACKAGING_DONE_FILE);
 		toggleLoadingDialog(false);
 		if (packagingSuccess) {
 			Toast.makeText(this, "APK Created: " + apkPath, Toast.LENGTH_LONG).show();
+			if(preferences.openPackageInstaller().getOr(true)) {
+				Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".provider", new File(apkPath));
+				Intent promptInstall = new Intent(Intent.ACTION_VIEW).setDataAndType(uri, "application/vnd.android.package-archive");
+				promptInstall.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+				startActivity(promptInstall);
+			}
 		} else {
 			Toast.makeText(this, "Failed to create APK!", Toast.LENGTH_LONG).show();
 		}
@@ -357,6 +385,7 @@ public class MainActivity extends AppCompatActivity
 	private List<IDrawerItem> getDrawerItems() {
 		List<IDrawerItem> items = new ArrayList<>();
 		items.add(drawerUtils.createSectionHeaderDrawerItem(R.string.drawer_section_general, false));
+		items.add(drawerUtils.createPrimaryDrawerItem(this, FontAwesome.Icon.faw_th, R.string.drawer_item_patcher_title, R.string.drawer_item_patcher_subtitle, THEME_PATCHER_ITEM, false));
 		items.add(drawerUtils.createPrimaryDrawerItem(this, FontAwesome.Icon.faw_crosshairs, R.string.drawer_item_packager_title, R.string.drawer_item_packager_subtitle, THEME_PACKAGER_ITEM, true));
 		items.add(drawerUtils.createSectionHeaderDrawerItem(R.string.drawer_section_more, true));
 		items.add(drawerUtils.createPrimaryDrawerItem(this, FontAwesome.Icon.faw_github, R.string.drawer_item_github, 0, GITHUB_ITEM, false));
@@ -395,6 +424,10 @@ public class MainActivity extends AppCompatActivity
 
 	private void switchPageForDrawerSelection(int drawerItemId) {
 		switch (drawerItemId) {
+			case THEME_PATCHER_ITEM:
+				isForThemePatching = true;
+				onImportApkMenuItemSelected();
+				break;
 			case THEME_PACKAGER_ITEM:
 			default:
 				viewPager.setAdapter(new AssetsPageAdapter(this, getSupportFragmentManager()));
@@ -420,8 +453,8 @@ public class MainActivity extends AppCompatActivity
 		}
 	}
 
-	private List<MaterialSimpleListItem> getApplicationListDialogItems() {
-		return StreamSupport.stream(apkExtractor.getApkInfoList()).map(apkInfo -> {
+	private List<MaterialSimpleListItem> getApplicationListDialogItems(List<ApkInfo> apkInfoList) {
+		return StreamSupport.stream(apkInfoList).map(apkInfo -> {
 			MaterialSimpleListItem.Builder builder = new MaterialSimpleListItem.Builder(this);
 			try {
 				Drawable icon = getPackageManager().getApplicationIcon(apkInfo.getPackageName());

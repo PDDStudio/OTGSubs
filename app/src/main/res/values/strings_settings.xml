@@ -15,10 +15,14 @@
 
 	<string name="pref_item_crash_reports_title">Crash Reports</string>
 	<string name="pref_item_crash_reports_summary">Automatically collect and send anonymous crash reports. This helps improving the application\'s stability.</string>
+
+	<string name="pref_item_install_build_apk_title">Automatically Open Theme Installer</string>
+	<string name="pref_item_install_build_apk_summary">Open the Package Installer after a Theme was build successfully.</string>
 	<!-- Preference Keys -->
 	<string name="pref_item_build_info_key">buildInfo</string>
 	<string name="pref_item_tint_nav_bar_key">tintNavigationBar</string>
 	<string name="pref_item_crash_reports_key">enableCrashReports</string>
+	<string name="pref_item_install_build_apk_key">installBuildApk</string>
 	<string name="pref_item_app_theme_key">applicationTheme</string>
 	<string name="pref_item_app_theme_changed_runtime_key">appThemeChangedRuntime</string>
 	<!-- Settings Items & Values -->

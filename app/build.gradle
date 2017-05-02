@@ -58,7 +58,7 @@ dependencies {
     annotationProcessor "org.androidannotations:androidannotations:${rootProject.ext.androidAnnotationsVersion}"
     compile "org.androidannotations:androidannotations-api:${rootProject.ext.androidAnnotationsVersion}"
     compile project(':substratum-packager')
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
+    compile project(':substratum-template-patcher')
 }
 
 apply plugin: 'com.google.gms.google-services'
