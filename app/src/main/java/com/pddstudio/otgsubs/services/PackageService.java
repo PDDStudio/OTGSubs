@@ -11,7 +11,6 @@ import android.util.Log;
 import com.pddstudio.otgsubs.PackageInfoBean;
 import com.pddstudio.substratum.packager.PackageCallback;
 import com.pddstudio.substratum.packager.SubstratumPackager;
-import com.pddstudio.substratum.packager.models.ApkInfo;
 import com.pddstudio.substratum.packager.models.AssetsType;
 
 import org.androidannotations.annotations.Bean;
@@ -24,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import java8.util.stream.Collectors;
 import java8.util.stream.StreamSupport;
 
 /**
@@ -40,6 +40,10 @@ public class PackageService extends AbstractIntentService implements PackageCall
 
 	public static void packageApplication(@NonNull Context context, @Nullable List<String> assetsList) {
 		PackageService_.intent(context).doPackage(assetsList).start();
+	}
+
+	public static void packageApplication(@NonNull Context context, @Nullable File assetsDir) {
+		PackageService_.intent(context).packageWithAssets(assetsDir).start();
 	}
 
 	public static void createApkFromRequestedAssets(@NonNull Context context) {
@@ -68,12 +72,20 @@ public class PackageService extends AbstractIntentService implements PackageCall
 	@ServiceAction
 	void doPackage(@Nullable List<String> fileList) {
 		SubstratumPackager.Builder builder = new SubstratumPackager.Builder(this);
-		ApkInfo info = packager.getApkInfo("com.moelle.deepdarkness");
-		if(info != null) {
-			builder.addApkInfo(info);
-		} else {
-			Log.w(TAG, "APK Info was null...");
+		if(fileList != null && !fileList.isEmpty()) {
+			StreamSupport.stream(fileList)
+						 .map(File::new)
+						 .peek(file -> Log.d(TAG, "adding directory: " + file.getAbsolutePath()))
+						 .forEach(builder::addAssetsDir);
 		}
+		packager = builder.build();
+		packager.doWork(this);
+	}
+
+	@ServiceAction
+	void packageWithAssets(@Nullable File assetsDir) {
+		List<String> fileList = StreamSupport.stream(org.apache.commons.io.FileUtils.listFiles(assetsDir, null, true)).filter(File::isDirectory).map(File::getAbsolutePath).collect(Collectors.toList());
+		SubstratumPackager.Builder builder = new SubstratumPackager.Builder(this);
 		if(fileList != null && !fileList.isEmpty()) {
 			StreamSupport.stream(fileList)
 						 .map(File::new)
