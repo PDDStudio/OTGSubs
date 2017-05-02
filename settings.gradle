@@ -1,1 +1,1 @@
-include ':app', ':substratum-packager', ':substratum-template-patcher'
+include ':app', ':substratum-packager', ':substratum-template-patcher', ':substratum-debugger'
