@@ -54,3 +54,5 @@ app/google-services.json
 
 .idea/instapk.xml
 instapk.log*
+
+.playstore/
