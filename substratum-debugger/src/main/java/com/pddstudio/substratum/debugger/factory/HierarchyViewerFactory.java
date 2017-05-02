@@ -20,6 +20,11 @@ public class HierarchyViewerFactory implements LayoutInflater.Factory2 {
 		this.baseFactory = factory;
 	}
 
+	public HierarchyViewerFactory(@NonNull LayoutInflater.Factory2 factory, @Nullable InflationCallback callback) {
+		this.baseFactory = factory;
+		this.callback = callback;
+	}
+
 	private void onInterceptLayout(View parent, String name, Context context, AttributeSet attrs) {
 		if(callback != null) {
 			callback.onLayoutInflated(parent, name, context, attrs);
