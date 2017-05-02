@@ -7,13 +7,13 @@
 	<uses-permission android:name="android.permission.INTERNET" />
 
 	<application
+		android:name=".OTGSubsApplication_"
 		android:allowBackup="true"
 		android:icon="@mipmap/ic_launcher"
 		android:label="@string/app_name"
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
-		android:theme="@style/AppTheme"
-		android:name=".OTGSubsApplication_">
+		android:theme="@style/AppTheme">
 		<activity android:name=".MainActivity_">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
@@ -21,7 +21,7 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-
+		<activity android:name=".PatcherActivity_" />
 		<activity android:name=".SettingsActivity_" />
 
 		<service
@@ -30,7 +30,8 @@
 		<service
 			android:name=".services.ImportApkService_"
 			android:exported="false" />
-		<service android:name=".services.PatchTemplateService_"
+		<service
+			android:name=".services.PatchTemplateService_"
 			android:exported="false" />
 
 		<provider
@@ -40,7 +41,7 @@
 			android:grantUriPermissions="true">
 			<meta-data
 				android:name="android.support.FILE_PROVIDER_PATHS"
-				android:resource="@xml/provider_paths"/>
+				android:resource="@xml/provider_paths" />
 		</provider>
 
 	</application>

@@ -20,6 +20,8 @@
 	<string name="menu_item_clean">Restore Defaults</string>
 	<string name="drawer_item_packager_title">Substratum Packager</string>
 	<string name="drawer_item_packager_subtitle">Compile your Theme Resources</string>
+	<string name="drawer_item_patcher_title">Theme Patcher</string>
+	<string name="drawer_item_patcher_subtitle">Patch an existing Theme</string>
 	<string name="drawer_section_more">More</string>
 	<string name="drawer_section_general">General</string>
 	<string name="drawer_item_about">About</string>
@@ -30,4 +32,10 @@
 	<string name="drawer_header_subtitle">Create Substratum Themes on your Device.</string>
 	<string name="dialog_modify_item_title">Modify \'%1$s\'</string>
 	<string name="dialog_rename_file_title">Rename \'%1$s\'</string>
+	<string name="dialog_color_chooser_primary_title">Select Primary Color</string>
+	<string name="dialog_color_chooser_primary_dark_title">Select Primary Dark Color</string>
+
+	<string name="activity_patcher_title">OTGSubs: Theme Patcher</string>
+	<string name="patcher_btn_primary_dark_color">Primary Dark Color (%1$s)</string>
+	<string name="patcher_btn_primary_color">Primary Color (%1$s)</string>
 </resources>
