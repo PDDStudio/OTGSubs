@@ -85,6 +85,7 @@ public class TemplatePatcher {
 		private final Configuration configuration;
 
 		public static Builder fromJson(String jsonContent) throws PatchingException {
+			Log.d("TemplatePatcher$Builder", "JSON: " + jsonContent);
 			Gson gson = new Gson();
 			JsonConfigModel configModel = gson.fromJson(jsonContent, JsonConfigModel.class);
 			return new Builder(configModel);
