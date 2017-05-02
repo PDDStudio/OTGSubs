@@ -8,6 +8,12 @@
 
 This project is still in **Alpha Stage** and might contain several rough edges that need to be fixed!
 
+### PlayStore Alpha Testing
+
+You can opt-in to test the first Alpha Versions of OTGSubs directly via Google PlayStore™
+
+[![](https://github.com/PDDStudio/OTGSubs/blob/develop/gfx/en-play-badge.png)](https://play.google.com/store/apps/details?id=com.pddstudio.otgsubs)
+
 ### Project Setup
 
 The project contains three modules:
