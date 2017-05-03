@@ -29,6 +29,12 @@ The project contains three modules:
 * Patrick Jung [<patrick.pddstudio@gmail.com>](mailto:patrick.pddstudio@gmail.com)
 * Google+ [Profile](https://plus.google.com/+PatrickJung42)
 
+### Contributors
+
+Special Thanks to everyone who contributed to this project!
+
+* Sasi Kanth ([@sasikanth01](https://github.com/sasikanth01))
+
 ### License
 
 	Copyright 2017 Patrick Jung
