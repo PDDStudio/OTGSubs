@@ -1,5 +1,7 @@
 ## OTGSubs
 
+[![](https://raw.githubusercontent.com/PDDStudio/OTGSubs/develop/gfx/otgsubs_banner.jpg)](https://play.google.com/store/apps/details?id=com.pddstudio.otgsubs)
+
 > An Application to create and package Substratum Themes directly on your Android Phone.
 >
 > OTGSubs is a synonym for On-The-Go Substratum
