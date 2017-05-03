@@ -17,6 +17,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -31,7 +33,9 @@ import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.pddstudio.otgsubs.adapters.AssetsPageAdapter;
+import com.pddstudio.otgsubs.beans.EventBusBean;
 import com.pddstudio.otgsubs.beans.ManifestProcessorBean;
+import com.pddstudio.otgsubs.beans.PackageInfoBean;
 import com.pddstudio.otgsubs.events.AssetTypeAddedEvent;
 import com.pddstudio.otgsubs.events.FileChooserDialogEvent;
 import com.pddstudio.otgsubs.events.RefreshItemListEvent;
@@ -270,6 +274,7 @@ public class MainActivity extends AppCompatActivity
 	@AfterViews
 	protected void setupUi() {
 		toolbar.inflateMenu(R.menu.menu_main);
+		disableImportMenuItemIfReleaseBuild();
 		setSupportActionBar(toolbar);
 
 		if (!hasRequiredPermissions()) {
@@ -348,7 +353,11 @@ public class MainActivity extends AppCompatActivity
 	protected void onImportApkMenuItemSelected() {
 		MaterialSimpleListAdapter adapter = new MaterialSimpleListAdapter(this);
 		StreamSupport.stream(getApplicationListDialogItems(isForThemePatching ? manifestProcessor.getSupportedThemes() : apkExtractor.getApkInfoList())).forEach(adapter::add);
-		new MaterialDialog.Builder(this).adapter(adapter, null).show();
+		new MaterialDialog.Builder(this).adapter(adapter, null).dismissListener(dialog -> {
+			if(isForThemePatching) {
+				isForThemePatching = false;
+			}
+		}).show();
 	}
 
 	@OptionsItem(R.id.menu_restore_defaults)
@@ -476,6 +485,14 @@ public class MainActivity extends AppCompatActivity
 				return 0;
 			}
 		}).collect(Collectors.toList());
+	}
+
+	private void disableImportMenuItemIfReleaseBuild() {
+		Menu menu = toolbar.getMenu();
+		MenuItem importItem;
+		if((importItem = menu.findItem(R.id.menu_import_apk)) != null) {
+			importItem.setVisible(BuildConfig.DEBUG);
+		}
 	}
 
 	private void setCorrectFabColor() {

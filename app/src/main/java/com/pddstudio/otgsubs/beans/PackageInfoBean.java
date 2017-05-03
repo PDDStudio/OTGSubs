@@ -1,4 +1,4 @@
-package com.pddstudio.otgsubs;
+package com.pddstudio.otgsubs.beans;
 
 import android.support.annotation.NonNull;
 
@@ -91,11 +91,11 @@ public class PackageInfoBean {
 		});
 	}
 
-	void register() {
+	public void register() {
 		eventBusBean.register(this);
 	}
 
-	void unregister() {
+	public void unregister() {
 		eventBusBean.unregister(this);
 	}
 

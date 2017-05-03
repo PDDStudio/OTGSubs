@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.pddstudio.otgsubs.PackageInfoBean;
+import com.pddstudio.otgsubs.beans.PackageInfoBean;
 import com.pddstudio.substratum.packager.PackageCallback;
 import com.pddstudio.substratum.packager.SubstratumPackager;
 import com.pddstudio.substratum.packager.models.AssetsType;

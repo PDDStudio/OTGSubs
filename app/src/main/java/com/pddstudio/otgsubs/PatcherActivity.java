@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
+import com.pddstudio.otgsubs.beans.EventBusBean;
+import com.pddstudio.otgsubs.beans.PackageInfoBean;
 import com.pddstudio.otgsubs.events.ColorChooserDialogEvent;
 import com.pddstudio.otgsubs.events.RefreshItemListEvent;
 import com.pddstudio.otgsubs.fragments.ThemePatcherFragment;
@@ -37,6 +39,7 @@ import org.androidannotations.annotations.Receiver;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 
@@ -102,7 +105,7 @@ public class PatcherActivity extends AppCompatActivity implements ColorChooserDi
 		}
 	}
 
-	@Subscribe
+	@Subscribe(threadMode = ThreadMode.MAIN)
 	public void onPatchingCompleted(RefreshItemListEvent event) {
 		onBuildApkMenuItemSelected();
 	}

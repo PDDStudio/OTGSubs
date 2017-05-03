@@ -3,7 +3,7 @@ package com.pddstudio.otgsubs.services;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.pddstudio.otgsubs.EventBusBean;
+import com.pddstudio.otgsubs.beans.EventBusBean;
 import com.pddstudio.otgsubs.events.ImportAssetsFromApkEvent;
 import com.pddstudio.substratum.packager.ApkExtractor;
 import com.pddstudio.substratum.packager.models.ApkInfo;
