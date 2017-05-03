@@ -17,6 +17,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -272,6 +274,7 @@ public class MainActivity extends AppCompatActivity
 	@AfterViews
 	protected void setupUi() {
 		toolbar.inflateMenu(R.menu.menu_main);
+		disableImportMenuItemIfReleaseBuild();
 		setSupportActionBar(toolbar);
 
 		if (!hasRequiredPermissions()) {
@@ -482,6 +485,14 @@ public class MainActivity extends AppCompatActivity
 				return 0;
 			}
 		}).collect(Collectors.toList());
+	}
+
+	private void disableImportMenuItemIfReleaseBuild() {
+		Menu menu = toolbar.getMenu();
+		MenuItem importItem;
+		if((importItem = menu.findItem(R.id.menu_import_apk)) != null) {
+			importItem.setVisible(BuildConfig.DEBUG);
+		}
 	}
 
 	private void setCorrectFabColor() {
