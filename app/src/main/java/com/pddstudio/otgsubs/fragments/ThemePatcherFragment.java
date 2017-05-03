@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.pddstudio.otgsubs.EventBusBean;
+import com.pddstudio.otgsubs.beans.EventBusBean;
 import com.pddstudio.otgsubs.R;
 import com.pddstudio.otgsubs.beans.ManifestProcessorBean;
 import com.pddstudio.otgsubs.events.ColorChooserDialogEvent;

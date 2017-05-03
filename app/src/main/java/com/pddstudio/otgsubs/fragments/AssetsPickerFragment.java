@@ -9,7 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.pddstudio.otgsubs.EventBusBean;
+import com.pddstudio.otgsubs.beans.EventBusBean;
 import com.pddstudio.otgsubs.R;
 import com.pddstudio.otgsubs.events.FileChooserDialogEvent;
 import com.pddstudio.otgsubs.models.FileChooserType;

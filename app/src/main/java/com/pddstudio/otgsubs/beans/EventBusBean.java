@@ -1,4 +1,4 @@
-package com.pddstudio.otgsubs;
+package com.pddstudio.otgsubs.beans;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.EBean;

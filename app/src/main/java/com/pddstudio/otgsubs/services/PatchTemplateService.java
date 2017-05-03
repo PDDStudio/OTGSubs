@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.pddstudio.otgsubs.EventBusBean;
+import com.pddstudio.otgsubs.beans.EventBusBean;
 import com.pddstudio.otgsubs.events.ImportAssetsFromApkEvent;
 import com.pddstudio.substratum.packager.ApkExtractor;
 import com.pddstudio.substratum.packager.models.ApkInfo;
