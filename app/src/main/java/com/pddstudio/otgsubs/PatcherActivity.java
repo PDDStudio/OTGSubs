@@ -39,6 +39,7 @@ import org.androidannotations.annotations.Receiver;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 
@@ -104,7 +105,7 @@ public class PatcherActivity extends AppCompatActivity implements ColorChooserDi
 		}
 	}
 
-	@Subscribe
+	@Subscribe(threadMode = ThreadMode.MAIN)
 	public void onPatchingCompleted(RefreshItemListEvent event) {
 		onBuildApkMenuItemSelected();
 	}
