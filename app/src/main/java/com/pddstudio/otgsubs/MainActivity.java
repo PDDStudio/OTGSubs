@@ -350,7 +350,11 @@ public class MainActivity extends AppCompatActivity
 	protected void onImportApkMenuItemSelected() {
 		MaterialSimpleListAdapter adapter = new MaterialSimpleListAdapter(this);
 		StreamSupport.stream(getApplicationListDialogItems(isForThemePatching ? manifestProcessor.getSupportedThemes() : apkExtractor.getApkInfoList())).forEach(adapter::add);
-		new MaterialDialog.Builder(this).adapter(adapter, null).show();
+		new MaterialDialog.Builder(this).adapter(adapter, null).dismissListener(dialog -> {
+			if(isForThemePatching) {
+				isForThemePatching = false;
+			}
+		}).show();
 	}
 
 	@OptionsItem(R.id.menu_restore_defaults)
