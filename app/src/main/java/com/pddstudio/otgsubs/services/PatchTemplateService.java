@@ -55,6 +55,8 @@ public class PatchTemplateService extends AbstractIntentService implements Templ
 
 	private static final String THEME_NAME_TEMPLATE = "type1a_%s.xml";
 
+	private static final boolean FULL_PACKAGE = false;
+
 	public static void patchTargetTheme(@NonNull Context context, @NonNull ApkInfo apkInfo, @Nullable String title, @NonNull HashMap<String, String> themeColorMappings) {
 		if(title == null) {
 			title = "PatchedColor";
@@ -136,36 +138,50 @@ public class PatchTemplateService extends AbstractIntentService implements Templ
 	}
 
 	private void sendEvent(File cachedAssetsFile) {
-		File overlayDir = new File(cachedAssetsFile, OVERLAYS_DIR);
+		File overlayDir;
+
+		if(!FULL_PACKAGE) {
+			overlayDir = new File(cachedAssetsFile, THEME_CONFIG_RELATIVE_LOCATION);
+		} else {
+			overlayDir = new File(cachedAssetsFile, OVERLAYS_DIR);
+
+		}
+
 		if(!overlayDir.exists()) {
 			overlayDir.mkdirs();
 		}
 
-		File fontsDir = new File(cachedAssetsFile, FONTS_DIR);
-		if(!fontsDir.exists()) {
-			fontsDir.mkdirs();
-		}
-
-		File audioDir = new File(cachedAssetsFile, AUDIO_DIR);
-		if(!audioDir.exists()) {
-			audioDir.mkdirs();
-		}
-
-		File bootAnimationDir = new File(cachedAssetsFile, BOOT_ANIMATION_DIR);
-		if(!bootAnimationDir.exists()) {
-			bootAnimationDir.mkdirs();
-		}
-
 		Collection<File> overlays = FileUtils.listFiles(overlayDir, null, true);
-		Collection<File> fonts = FileUtils.listFiles(fontsDir, null, true);
-		Collection<File> audio = FileUtils.listFiles(audioDir, null, true);
-		Collection<File> bootAnimation = FileUtils.listFiles(bootAnimationDir, null, true);
 
 		ImportAssetsFromApkEvent event = new ImportAssetsFromApkEvent();
 		event.withList(convertCollectionToAssetsFileInfo(overlays, AssetsType.OVERLAYS));
-		event.withList(convertCollectionToAssetsFileInfo(fonts, AssetsType.FONTS));
-		event.withList(convertCollectionToAssetsFileInfo(audio, AssetsType.AUDIO));
-		event.withList(convertCollectionToAssetsFileInfo(bootAnimation, AssetsType.BOOT_ANIMATIONS));
+
+		if(FULL_PACKAGE) {
+
+			File fontsDir = new File(cachedAssetsFile, FONTS_DIR);
+			if(!fontsDir.exists()) {
+				fontsDir.mkdirs();
+			}
+
+			File audioDir = new File(cachedAssetsFile, AUDIO_DIR);
+			if(!audioDir.exists()) {
+				audioDir.mkdirs();
+			}
+
+			File bootAnimationDir = new File(cachedAssetsFile, BOOT_ANIMATION_DIR);
+			if(!bootAnimationDir.exists()) {
+				bootAnimationDir.mkdirs();
+			}
+
+			Collection<File> fonts = FileUtils.listFiles(fontsDir, null, true);
+			Collection<File> audio = FileUtils.listFiles(audioDir, null, true);
+			Collection<File> bootAnimation = FileUtils.listFiles(bootAnimationDir, null, true);
+
+			event.withList(convertCollectionToAssetsFileInfo(fonts, AssetsType.FONTS));
+			event.withList(convertCollectionToAssetsFileInfo(audio, AssetsType.AUDIO));
+			event.withList(convertCollectionToAssetsFileInfo(bootAnimation, AssetsType.BOOT_ANIMATIONS));
+		}
+
 		eventBus.post(event);
 	}
 
