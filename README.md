@@ -16,6 +16,8 @@ You can opt-in to test the first Alpha Versions of OTGSubs directly via Google P
 
 [![](https://github.com/PDDStudio/OTGSubs/blob/develop/gfx/en-play-badge.png)](https://play.google.com/store/apps/details?id=com.pddstudio.otgsubs)
 
+[PlayStore Opt-In Link](https://play.google.com/apps/testing/com.pddstudio.otgsubs)
+
 ### Project Setup
 
 The project contains three modules:
