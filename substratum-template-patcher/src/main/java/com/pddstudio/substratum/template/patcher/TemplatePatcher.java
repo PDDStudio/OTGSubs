@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import java8.util.stream.Collectors;
@@ -27,24 +26,26 @@ public class TemplatePatcher {
 
 	private static final String TAG = TemplatePatcher.class.getSimpleName();
 
-	private final LinePatcher linePatcher;
-	private final List<File> targetFiles;
-	private final Configuration configuration;
+	private final LinePatcher           linePatcher;
+	private final List<File>            targetFiles;
+	private final ThemeConfiguration themeConfiguration;
+	private List<TemplateConfiguration> templateConfigurations;
 
 	private TemplatePatcher(Builder builder) {
 		this.linePatcher = builder.linePatcher;
 		this.targetFiles = builder.targetFiles;
-		this.configuration = builder.configuration;
+		this.themeConfiguration = builder.themeConfiguration;
+		this.templateConfigurations = themeConfiguration.getThemeTemplates();
 	}
 
-	private List<String> patchLines(List<String> lines) {
-		return StreamSupport.stream(lines).map(this::patchLine).collect(Collectors.toList());
+	private List<String> patchLines(List<String> lines, TemplateConfiguration templateConfiguration) {
+		return StreamSupport.stream(lines).map(line -> patchLine(line, templateConfiguration)).collect(Collectors.toList());
 	}
 
-	private String patchLine(String line) {
+	private String patchLine(String line, TemplateConfiguration templateConfiguration) {
 		final String[] patchedLine = {null};
-		StreamSupport.stream(configuration.getThemeMappings().keySet()).forEach(key -> {
-			String value = configuration.getThemeMappings().get(key);
+		StreamSupport.stream(templateConfiguration.getThemeMappings().keySet()).forEach(key -> {
+			String value = templateConfiguration.getThemeMappings().get(key);
 			String patched = linePatcher.patch(line, key, value);
 			if(patched != null && !patched.isEmpty() && !patched.contains("{") && !patched.contains("}")) {
 				patchedLine[0] = patched;
@@ -57,32 +58,58 @@ public class TemplatePatcher {
 		}
 	}
 
-	//NOTE: Template file must be copied to new file after
-	public boolean patch(PatchingCallback patchingCallback) throws PatchingException {
-		configuration.updateThemeMappings(patchingCallback.getPatchedValuesMappings());
-		File templateFile = patchingCallback.resolveTemplateFileName(configuration.getTemplateFileName());
+	public void setTemplateConfigurations(List<TemplateConfiguration> templateConfigurations) {
+		this.templateConfigurations = templateConfigurations;
+	}
+
+	public List<TemplateConfiguration> getTemplateConfigurations() {
+		return templateConfigurations;
+	}
+
+	public ThemeConfiguration getThemeConfiguration() {
+		return themeConfiguration;
+	}
+
+	public boolean patchAll(PatchingCallback patchingCallback) throws PatchingException {
+		final PatchingException[] patchingException = {null};
+		StreamSupport.stream(templateConfigurations).forEach(templateConfiguration -> {
+			try {
+				patch(templateConfiguration, patchingCallback);
+			} catch (PatchingException e) {
+				e.printStackTrace();
+				patchingException[0] = e;
+			}
+		});
+		if(patchingException[0] != null) {
+			throw new PatchingException(patchingException[0]);
+		} else {
+			return true;
+		}
+	}
+
+	private void patch(TemplateConfiguration templateConfiguration, PatchingCallback callback) throws PatchingException {
+		File templateFile = callback.resolveTemplateFileName(templateConfiguration.getTemplateFileName());
 		if(templateFile == null ||!templateFile.exists() || templateFile.isDirectory()) {
 			throw new PatchingException("Template File must not be null, empty or a directory!");
 		}
 		try {
 			List<String> content = FileUtils.readLines(templateFile, Charset.forName("utf-8"));
-			List<String> patchedContent = patchLines(content);
+			List<String> patchedContent = patchLines(content, templateConfiguration);
 			if(patchedContent != null && !patchedContent.isEmpty()) {
-				File newDestination = new File(templateFile.getParentFile(), FilenameUtils.removeExtension(patchingCallback.getPatchedFileName() + ".xml"));
+				File newDestination = new File(templateFile.getParentFile(), FilenameUtils.removeExtension(callback.getPatchedFileName(templateConfiguration) + ".xml"));
 				StreamSupport.stream(patchedContent).forEach(line -> Log.d(TAG, "PATCHED: " + line));
 				FileUtils.writeLines(newDestination, patchedContent, false);
 			}
 		} catch (IOException e) {
 			throw new PatchingException(e);
 		}
-		return true;
 	}
 
 	public static final class Builder {
 
 		private final List<File> targetFiles;
 		private LinePatcher linePatcher = XmlPatcher.getInstance();
-		private final Configuration configuration;
+		private final ThemeConfiguration themeConfiguration;
 
 		public static Builder fromJson(String jsonContent) throws PatchingException {
 			Log.d("TemplatePatcher$Builder", "JSON: " + jsonContent);
@@ -91,15 +118,15 @@ public class TemplatePatcher {
 			return new Builder(configModel);
 		}
 
-		public static Builder fromConfig(Configuration configuration) throws PatchingException {
-			return new Builder(configuration);
+		public static Builder fromConfig(ThemeConfiguration themeConfiguration) throws PatchingException {
+			return new Builder(themeConfiguration);
 		}
 
-		private Builder(Configuration configuration) throws PatchingException {
-			if(configuration == null) {
-				throw new PatchingException("Configuration must not be null!");
+		private Builder(ThemeConfiguration themeConfiguration) throws PatchingException {
+			if(themeConfiguration == null) {
+				throw new PatchingException("TemplateConfiguration must not be null!");
 			}
-			this.configuration = configuration;
+			this.themeConfiguration = themeConfiguration;
 			this.targetFiles = new ArrayList<>();
 		}
 
@@ -129,10 +156,8 @@ public class TemplatePatcher {
 	}
 
 	public interface PatchingCallback {
-		//Callback which should resolve the target file in cache and return its result as file
-		HashMap<String, String> getPatchedValuesMappings();
 		File resolveTemplateFileName(String templateName) throws PatchingException;
-		String getPatchedFileName();
+		String getPatchedFileName(TemplateConfiguration templateConfiguration);
 	}
 
 }

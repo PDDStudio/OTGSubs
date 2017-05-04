@@ -1,35 +1,30 @@
 package com.pddstudio.substratum.template.patcher.internal.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.pddstudio.substratum.template.patcher.Configuration;
+import com.pddstudio.substratum.template.patcher.TemplateConfiguration;
+import com.pddstudio.substratum.template.patcher.ThemeConfiguration;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
+import java8.util.Objects;
 import java8.util.stream.StreamSupport;
 
 /**
  * Created by pddstudio on 25/04/2017.
  */
 
-public class JsonConfigModel implements Serializable, Configuration {
+public class JsonConfigModel implements Serializable, ThemeConfiguration {
 
-	@SerializedName("name")
+	@SerializedName("themeName")
 	private String themeName;
 
-	@SerializedName("author")
+	@SerializedName("themeAuthor")
 	private String themeAuthor;
 
-	@SerializedName("themes")
-	private HashMap<String, String> themeValueMap;
-
-	@SerializedName("templateFile")
-	private String themeTemplateFileName;
-
-	@Override
-	public HashMap<String, String> getThemeMappings() {
-		return themeValueMap;
-	}
+	@SerializedName("themeTemplates")
+	private List<Template> templateList;
 
 	@Override
 	public String getThemeName() {
@@ -42,12 +37,10 @@ public class JsonConfigModel implements Serializable, Configuration {
 	}
 
 	@Override
-	public String getTemplateFileName() {
-		return themeTemplateFileName;
+	public List<TemplateConfiguration> getThemeTemplates() {
+		List<TemplateConfiguration> configurations = new ArrayList<>();
+		StreamSupport.stream(templateList).filter(Objects::nonNull).forEach(configurations::add);
+		return configurations;
 	}
 
-	@Override
-	public void updateThemeMappings(HashMap<String, String> updatedMap) {
-		StreamSupport.stream(updatedMap.keySet()).forEachOrdered(key -> themeValueMap.put(key, updatedMap.get(key)));
-	}
 }
