@@ -11,10 +11,12 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
+import com.appcam.sdk.AppCam;
 import com.pddstudio.otgsubs.beans.EventBusBean;
 import com.pddstudio.otgsubs.beans.PackageInfoBean;
 import com.pddstudio.otgsubs.events.ColorChooserDialogEvent;
@@ -139,6 +141,12 @@ public class PatcherActivity extends AppCompatActivity implements ColorChooserDi
 		super.onResume();
 		deviceUtils.setNavigationBarColor(this);
 		packageInfoBean.register();
+	}
+
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		AppCam.dispatchTouchEvent(ev);
+		return super.dispatchTouchEvent(ev);
 	}
 
 	@Receiver(actions = PatchTemplateService.ACTION_PATCHING_DONE, local = true)

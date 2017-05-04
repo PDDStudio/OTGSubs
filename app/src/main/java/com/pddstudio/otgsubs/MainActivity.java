@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
@@ -27,6 +28,7 @@ import com.afollestad.materialdialogs.folderselector.FileChooserDialog;
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
+import com.appcam.sdk.AppCam;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
@@ -269,6 +271,12 @@ public class MainActivity extends AppCompatActivity
 		drawer.closeDrawer();
 		return false;
 
+	}
+
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		AppCam.dispatchTouchEvent(ev);
+		return super.dispatchTouchEvent(ev);
 	}
 
 	@AfterViews
