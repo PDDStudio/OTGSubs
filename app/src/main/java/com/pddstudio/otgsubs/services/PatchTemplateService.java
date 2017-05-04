@@ -9,11 +9,13 @@ import android.util.Log;
 
 import com.pddstudio.otgsubs.beans.EventBusBean;
 import com.pddstudio.otgsubs.events.ImportAssetsFromApkEvent;
+import com.pddstudio.otgsubs.events.PatchThemePreparationEvent;
 import com.pddstudio.substratum.packager.ApkExtractor;
 import com.pddstudio.substratum.packager.models.ApkInfo;
 import com.pddstudio.substratum.packager.models.AssetFileInfo;
 import com.pddstudio.substratum.packager.models.AssetsType;
 import com.pddstudio.substratum.template.patcher.PatchingException;
+import com.pddstudio.substratum.template.patcher.TemplateConfiguration;
 import com.pddstudio.substratum.template.patcher.TemplatePatcher;
 
 import org.androidannotations.annotations.Bean;
@@ -24,8 +26,8 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 
 import java8.util.stream.Collectors;
@@ -41,8 +43,11 @@ public class PatchTemplateService extends AbstractIntentService implements Templ
 	public static final String TAG = PatchTemplateService.class.getSimpleName();
 
 	public static final String ACTION_PATCHING_DONE = "com.pddstudio.otgsubs.services.ACTION_PATCHING_DONE";
+	public static final String ACTION_PREPARING_DONE = "com.pddstudio.otgsubs.services.ACTION_PREPARING_DONE";
 	public static final String EXTRA_PATCHING_SUCCESS = "com.pddstudio.otgsubs.services.EXTRA_PATCHING_SUCCESS";
+	public static final String EXTRA_PREPARING_SUCCESS = "com.pddstudio.otgsubs.services.EXTRA_PREPARING_SUCCESS";
 	public static final String EXTRA_PATCHING_ASSETS = "com.pddstudio.otgsubs.services.EXTRA_PATCHING_ASSETS";
+	public static final String EXTRA_PREPARING_TEMPLATES = "com.pddstudio.otgsubs.services.EXTRA_PREPARING_TEMPLATES";
 
 	private static final String ASSETS_DIR         = "assets";
 	private static final String OVERLAYS_DIR       = "overlays";
@@ -53,15 +58,16 @@ public class PatchTemplateService extends AbstractIntentService implements Templ
 	private static final String THEME_CONFIG_RELATIVE_LOCATION = "overlays/android/";
 	private static final String THEME_CONFIG_FILE_NAME         = "theme_config.json";
 
-	private static final String THEME_NAME_TEMPLATE = "type1a_%s.xml";
+	private static final String THEME_NAME_TEMPLATE = "%s_%s.xml";
 
 	private static final boolean FULL_PACKAGE = false;
 
-	public static void patchTargetTheme(@NonNull Context context, @NonNull ApkInfo apkInfo, @Nullable String title, @NonNull HashMap<String, String> themeColorMappings) {
-		if(title == null) {
-			title = "PatchedColor";
-		}
-		PatchTemplateService_.intent(context).patchApkIfPossible(apkInfo, title, themeColorMappings).start();
+	public static void patchTargetTheme(@NonNull Context context, @NonNull ApkInfo apkInfo, @NonNull List<TemplateConfiguration> templateConfigurations) {
+		PatchTemplateService_.intent(context).patchApkIfPossible(apkInfo,templateConfigurations).start();
+	}
+
+	public static void prepareTargetTheme(@NonNull Context context, @NonNull ApkInfo apkInfo) {
+		PatchTemplateService_.intent(context).prepareApk(apkInfo).start();
 	}
 
 	@Bean
@@ -71,8 +77,6 @@ public class PatchTemplateService extends AbstractIntentService implements Templ
 	protected EventBusBean eventBus;
 
 	private File cachedAssetDir;
-	private HashMap<String, String> themeColorMappings;
-	private String name;
 
 	public PatchTemplateService() {
 		super(TAG);
@@ -93,10 +97,13 @@ public class PatchTemplateService extends AbstractIntentService implements Templ
 		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 	}
 
+	private void sendPreparationEvent(boolean success, @NonNull List<TemplateConfiguration> templateConfigurations) {
+		PatchThemePreparationEvent event = new PatchThemePreparationEvent(success, templateConfigurations);
+		eventBus.post(event);
+	}
+
 	@ServiceAction
-	protected void patchApkIfPossible(ApkInfo apkInfo, String name, HashMap<String, String> themeColorMappings) {
-		this.name = name;
-		this.themeColorMappings = themeColorMappings;
+	protected void prepareApk(ApkInfo apkInfo) {
 		File targetCacheDir = new File(getCacheDir(), apkInfo.getPackageName());
 		try {
 			File cachedApkFile = apkExtractor.copyApkToCache(targetCacheDir, apkInfo);
@@ -113,7 +120,38 @@ public class PatchTemplateService extends AbstractIntentService implements Templ
 
 			File configFile = new File(cachedAssetDir, THEME_CONFIG_RELATIVE_LOCATION + THEME_CONFIG_FILE_NAME);
 			TemplatePatcher patcher = TemplatePatcher.Builder.fromJson(FileUtils.readFileToString(configFile, Charset.forName("utf-8"))).build();
-			boolean patchSuccess = patcher.patch(this);
+			List<TemplateConfiguration> templateConfigurations = patcher.getTemplateConfigurations();
+			if(templateConfigurations != null) {
+				sendPreparationEvent(true, templateConfigurations);
+			} else {
+				sendPreparationEvent(false, new ArrayList<>());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			sendPreparationEvent(false, new ArrayList<>());
+		}
+	}
+
+	@ServiceAction
+	protected void patchApkIfPossible(ApkInfo apkInfo, List<TemplateConfiguration> templates) {
+		File targetCacheDir = new File(getCacheDir(), apkInfo.getPackageName());
+		try {
+			File cachedApkFile = apkExtractor.copyApkToCache(targetCacheDir, apkInfo);
+			apkExtractor.extractAssetsFromApk(cachedApkFile, targetCacheDir);
+			FileUtils.forceDelete(cachedApkFile);
+
+			cachedAssetDir = new File(targetCacheDir, ASSETS_DIR);
+			boolean configPresent = checkThemeConfigPresent(cachedAssetDir);
+			Log.d(TAG, "Is ThemeConfig Present: " + configPresent);
+
+			if (!configPresent) {
+				return;
+			}
+
+			File configFile = new File(cachedAssetDir, THEME_CONFIG_RELATIVE_LOCATION + THEME_CONFIG_FILE_NAME);
+			TemplatePatcher patcher = TemplatePatcher.Builder.fromJson(FileUtils.readFileToString(configFile, Charset.forName("utf-8"))).build();
+			patcher.setTemplateConfigurations(templates);
+			boolean patchSuccess = patcher.patchAll(this);
 			sendResultBroadcast(patchSuccess, cachedAssetDir);
 			sendEvent(cachedAssetDir);
 		} catch (Exception e) {
@@ -123,18 +161,13 @@ public class PatchTemplateService extends AbstractIntentService implements Templ
 	}
 
 	@Override
-	public HashMap<String, String> getPatchedValuesMappings() {
-		return themeColorMappings;
-	}
-
-	@Override
 	public File resolveTemplateFileName(String templateName) throws PatchingException {
 		return new File(cachedAssetDir, THEME_CONFIG_RELATIVE_LOCATION + templateName);
 	}
 
 	@Override
-	public String getPatchedFileName() {
-		return getThemeName();
+	public String getPatchedFileName(TemplateConfiguration templateConfiguration) {
+		return String.format(THEME_NAME_TEMPLATE, templateConfiguration.getTemplateType(), templateConfiguration.getTemplateName());
 	}
 
 	private void sendEvent(File cachedAssetsFile) {
@@ -201,10 +234,6 @@ public class PatchTemplateService extends AbstractIntentService implements Templ
 				return null;
 			}
 		}).filter(assetFileInfo -> assetFileInfo != null).collect(Collectors.toList());
-	}
-
-	private String getThemeName() {
-		return String.format(THEME_NAME_TEMPLATE, name);
 	}
 
 }
