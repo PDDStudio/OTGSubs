@@ -17,7 +17,9 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 
+import com.appcam.sdk.AppCam;
 import com.pddstudio.otgsubs.utils.DeviceUtils;
 import com.pddstudio.otgsubs.utils.Preferences;
 import com.pddstudio.otgsubs.utils.Preferences_;
@@ -92,6 +94,12 @@ public class SettingsActivity extends AppCompatActivity {
 		Intent returnIntent = new Intent();
 		setResult(RESULT_OK, returnIntent);
 		finish();
+	}
+
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		AppCam.dispatchTouchEvent(ev);
+		return super.dispatchTouchEvent(ev);
 	}
 
 	@PreferenceScreen(R.xml.settings)
