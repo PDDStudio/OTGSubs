@@ -20,6 +20,7 @@ import com.appcam.sdk.AppCam;
 import com.pddstudio.otgsubs.beans.EventBusBean;
 import com.pddstudio.otgsubs.beans.PackageInfoBean;
 import com.pddstudio.otgsubs.events.ColorChooserDialogEvent;
+import com.pddstudio.otgsubs.events.PatchThemeDialogEvent;
 import com.pddstudio.otgsubs.events.RefreshItemListEvent;
 import com.pddstudio.otgsubs.fragments.ThemePatcherFragment;
 import com.pddstudio.otgsubs.models.ColorChooserType;
@@ -75,6 +76,7 @@ public class PatcherActivity extends AppCompatActivity implements ColorChooserDi
 
 	private ColorChooserType colorChooserType = ColorChooserType.IGNORE;
 	private MaterialDialog loadingDialog;
+	private MaterialDialog patcherDialog;
 	private File assetFileDir;
 
 	@Override
@@ -107,8 +109,16 @@ public class PatcherActivity extends AppCompatActivity implements ColorChooserDi
 		}
 	}
 
+	@Subscribe
+	public void onPatchDialogEvent(PatchThemeDialogEvent event) {
+		if(event != null) {
+			togglePatcherDialog(event.isShowDialogEvent());
+		}
+	}
+
 	@Subscribe(threadMode = ThreadMode.MAIN)
 	public void onPatchingCompleted(RefreshItemListEvent event) {
+		togglePatcherDialog(false);
 		onBuildApkMenuItemSelected();
 	}
 
@@ -193,14 +203,7 @@ public class PatcherActivity extends AppCompatActivity implements ColorChooserDi
 
 	@OptionsItem(R.id.menu_build_apk)
 	protected void onBuildApkMenuItemSelected() {
-		Toast.makeText(this, "Build Apk clicked!", Toast.LENGTH_SHORT).show();
 		toggleLoadingDialog(true);
-		/*if(assetFileDir != null) {
-			Log.d(TAG, "Packaging with: " + assetFileDir.getAbsolutePath());
-			PackageService.packageApplication(this, assetFileDir);
-		} else {
-			PackageService.createApkFromRequestedAssets(this);
-		}*/
 		PackageService.createApkFromRequestedAssets(this);
 	}
 
@@ -227,6 +230,23 @@ public class PatcherActivity extends AppCompatActivity implements ColorChooserDi
 				loadingDialog.dismiss();
 			}
 			loadingDialog = null;
+		}
+	}
+
+	private void togglePatcherDialog(boolean showDialog) {
+		if (showDialog) {
+			patcherDialog = new MaterialDialog.Builder(this).title(R.string.dialog_patching_title)
+															.content(R.string.dialog_patching_content)
+															.progress(true, -1)
+															.cancelable(false)
+															.canceledOnTouchOutside(false)
+															.autoDismiss(false)
+															.show();
+		} else {
+			if (patcherDialog != null && patcherDialog.isShowing()) {
+				patcherDialog.dismiss();
+			}
+			patcherDialog = null;
 		}
 	}
 

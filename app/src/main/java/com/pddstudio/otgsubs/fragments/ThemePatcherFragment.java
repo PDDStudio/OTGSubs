@@ -10,10 +10,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.pddstudio.otgsubs.beans.EventBusBean;
 import com.pddstudio.otgsubs.R;
+import com.pddstudio.otgsubs.beans.EventBusBean;
 import com.pddstudio.otgsubs.beans.ManifestProcessorBean;
 import com.pddstudio.otgsubs.events.ColorChooserDialogEvent;
+import com.pddstudio.otgsubs.events.PatchThemeDialogEvent;
 import com.pddstudio.otgsubs.models.ColorChooserType;
 import com.pddstudio.otgsubs.services.PatchTemplateService;
 import com.pddstudio.substratum.packager.models.ApkInfo;
@@ -120,6 +121,7 @@ public class ThemePatcherFragment extends Fragment {
 
 	@Click(R.id.build_patched_theme_btn)
 	protected void onBuildPatchedTheme() {
+		eventBus.post(new PatchThemeDialogEvent(true));
 		PatchTemplateService.patchTargetTheme(getContext(), apkInfo, themeNameEditText.getText().toString(), userMappings);
 	}
 

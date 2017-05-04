@@ -5,6 +5,8 @@
 	<string name="pick_assets_folder">Pick Assets Folder</string>
 	<string name="dialog_packaging_title">Building Theme…</string>
 	<string name="dialog_packaging_content">Please be patient, this might take a minute or two.</string>
+	<string name="dialog_patching_title">Patching Theme…</string>
+	<string name="dialog_patching_content">Please be patient, this might take a minute or two.</string>
 	<string name="dialog_extract_assets_title">Extracting Theme Assets</string>
 	<string name="dialog_extract_assets_content">Processing and Extracting Resources from \'%s\'</string>
 	<string name="getting_started_header">Getting Started</string>
