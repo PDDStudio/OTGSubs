@@ -54,6 +54,7 @@ dependencies {
     compile "com.github.clans:fab:${rootProject.ext.fabLibraryVersion}"
 
     compile "com.google.firebase:firebase-crash:${rootProject.ext.firebaseLibraryVersion}"
+    compile "com.appcam.android-sdk:core:${rootProject.ext.appCamLibraryVersion}"
 
     annotationProcessor "org.androidannotations:androidannotations:${rootProject.ext.androidAnnotationsVersion}"
     compile "org.androidannotations:androidannotations-api:${rootProject.ext.androidAnnotationsVersion}"
