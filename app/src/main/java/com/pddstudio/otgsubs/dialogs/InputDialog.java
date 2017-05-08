@@ -50,8 +50,8 @@ public class InputDialog implements MaterialDialog.InputCallback {
 		if (inputDialog != null && inputDialog.isShowing()) {
 			inputDialog.dismiss();
 		}
-		inputPreFill = -1;
-		inputHint = -1;
+		inputPreFill = 0;
+		inputHint = 0;
 	}
 
 	@Override
