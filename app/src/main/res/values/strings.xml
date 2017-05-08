@@ -41,4 +41,6 @@
 	<string name="patcher_btn_primary_dark_color">Primary Dark Color (%1$s)</string>
 	<string name="patcher_btn_primary_color">Primary Color (%1$s)</string>
 	<string name="patcher_btn_color">%1$s (%2$s)</string>
+	<string name="dialog_name_title">Enter a Name</string>
+	<string name="dialog_name_content">Give your Color-Schema a Name which you\'ll then see inside Substratum!</string>
 </resources>
