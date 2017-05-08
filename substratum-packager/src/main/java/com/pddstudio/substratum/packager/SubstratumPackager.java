@@ -127,7 +127,6 @@ public class SubstratumPackager {
 
 	public void cleanCache() {
 		try {
-			StreamSupport.stream(org.apache.commons.io.FileUtils.listFiles(cacheDir, null, true)).forEach(file -> Log.d(TAG, "File to delete: " + file.getAbsolutePath()));
 			FileUtils.cleanDirectory(cacheDir);
 			Log.i(TAG, "Cache directory cleaned at " + cacheDir.getAbsolutePath());
 		} catch (IOException io) {
