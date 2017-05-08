@@ -8,8 +8,8 @@ android {
         applicationId "com.pddstudio.otgsubs"
         minSdkVersion rootProject.ext.minSdk
         targetSdkVersion rootProject.ext.targetSdk
-        versionCode 3
-        versionName "1.1.0 (ALPHA)"
+        versionCode 4
+        versionName "1.2.0 (ALPHA)"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
