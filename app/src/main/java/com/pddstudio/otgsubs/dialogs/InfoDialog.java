@@ -21,7 +21,7 @@ public class InfoDialog {
 	private MaterialDialog infoDialog;
 
 	public void show(@StringRes int title, @StringRes int content) {
-		infoDialog = new MaterialDialog.Builder(context).title(title).content(content).show();
+		infoDialog = new MaterialDialog.Builder(context).title(title).content(content).positiveText(android.R.string.ok).show();
 	}
 
 	public void dismiss() {
