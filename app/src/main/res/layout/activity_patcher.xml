@@ -35,6 +35,6 @@
 		android:layout_gravity="bottom|end"
 		android:layout_marginBottom="16dp"
 		android:layout_marginEnd="16dp"
-		android:src="@drawable/ic_build_24dp" />
+		android:src="@drawable/ic_build_white_24dp" />
 
 </android.support.design.widget.CoordinatorLayout>

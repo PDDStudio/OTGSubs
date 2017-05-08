@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
 import com.appcam.sdk.AppCam;
+import com.github.clans.fab.FloatingActionButton;
 import com.pddstudio.otgsubs.beans.EventBusBean;
 import com.pddstudio.otgsubs.beans.PackageInfoBean;
 import com.pddstudio.otgsubs.events.ColorChooserDialogEvent;
@@ -57,6 +58,9 @@ public class PatcherActivity extends AppCompatActivity implements ColorChooserDi
 
 	@ViewById(R.id.toolbar)
 	protected Toolbar toolbar;
+
+	@ViewById(R.id.build_patched_theme_btn)
+	protected FloatingActionButton buildPatchedThemeFab;
 
 	@Extra
 	protected ApkInfo apkInfo;
@@ -194,6 +198,11 @@ public class PatcherActivity extends AppCompatActivity implements ColorChooserDi
 		if(getSupportActionBar() != null) {
 			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		}
+
+		buildPatchedThemeFab.setColorNormal(ThemeUtils.getAccentColorForTheme(this));
+		buildPatchedThemeFab.setColorRipple(ThemeUtils.getAccentColorForTheme(this));
+		buildPatchedThemeFab.setColorPressed(ThemeUtils.getAccentColorForTheme(this));
+
 		getSupportFragmentManager().beginTransaction()
 								   .replace(R.id.fragment_placeholder, ThemePatcherFragment.newInstance(apkInfo), ThemePatcherFragment.TAG)
 								   .commitAllowingStateLoss();
