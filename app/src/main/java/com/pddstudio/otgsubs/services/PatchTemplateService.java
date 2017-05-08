@@ -17,6 +17,7 @@ import com.pddstudio.substratum.packager.models.AssetsType;
 import com.pddstudio.substratum.template.patcher.PatchingException;
 import com.pddstudio.substratum.template.patcher.TemplateConfiguration;
 import com.pddstudio.substratum.template.patcher.TemplatePatcher;
+import com.pddstudio.substratum.template.patcher.ThemeConfiguration;
 
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EIntentService;
@@ -97,8 +98,11 @@ public class PatchTemplateService extends AbstractIntentService implements Templ
 		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 	}
 
-	private void sendPreparationEvent(boolean success, @NonNull List<TemplateConfiguration> templateConfigurations) {
+	private void sendPreparationEvent(boolean success, @NonNull List<TemplateConfiguration> templateConfigurations, @Nullable ThemeConfiguration themeConfiguration) {
 		PatchThemePreparationEvent event = new PatchThemePreparationEvent(success, templateConfigurations);
+		if(themeConfiguration != null) {
+			event.withThemeConfiguration(themeConfiguration);
+		}
 		eventBus.post(event);
 	}
 
@@ -122,13 +126,13 @@ public class PatchTemplateService extends AbstractIntentService implements Templ
 			TemplatePatcher patcher = TemplatePatcher.Builder.fromJson(FileUtils.readFileToString(configFile, Charset.forName("utf-8"))).build();
 			List<TemplateConfiguration> templateConfigurations = patcher.getTemplateConfigurations();
 			if(templateConfigurations != null) {
-				sendPreparationEvent(true, templateConfigurations);
+				sendPreparationEvent(true, templateConfigurations, patcher.getThemeConfiguration());
 			} else {
-				sendPreparationEvent(false, new ArrayList<>());
+				sendPreparationEvent(false, new ArrayList<>(), null);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			sendPreparationEvent(false, new ArrayList<>());
+			sendPreparationEvent(false, new ArrayList<>(), null);
 		}
 	}
 
@@ -167,6 +171,7 @@ public class PatchTemplateService extends AbstractIntentService implements Templ
 
 	@Override
 	public String getPatchedFileName(TemplateConfiguration templateConfiguration) {
+		Log.d(TAG, "getPatchedFileName() : Type -> " + templateConfiguration.getTemplateType() + " Name: " + templateConfiguration.getTemplateName());
 		return String.format(THEME_NAME_TEMPLATE, templateConfiguration.getTemplateType(), templateConfiguration.getTemplateName());
 	}
 
