@@ -1,5 +1,6 @@
 package com.pddstudio.substratum.template.patcher.internal.model;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.pddstudio.substratum.template.patcher.TemplateConfiguration;
 
@@ -32,7 +33,8 @@ public class Template implements Serializable, TemplateConfiguration {
 	@SerializedName("themes")
 	private HashMap<String, String> themeValueMap;
 
-	private transient String templateName;
+	@Expose
+	private String templateName;
 
 	@Override
 	public HashMap<String, String> getThemeMappings() {
