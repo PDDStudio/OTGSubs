@@ -7,6 +7,8 @@
 	<string name="dialog_packaging_content">Please be patient, this might take a minute or two.</string>
 	<string name="dialog_patching_title">Patching Theme…</string>
 	<string name="dialog_patching_content">Please be patient, this might take a minute or two.</string>
+	<string name="dialog_preparing_title">Preparing Theme…</string>
+	<string name="dialog_preparing_content">Please be patient, this might take a minute or two.</string>
 	<string name="dialog_extract_assets_title">Extracting Theme Assets</string>
 	<string name="dialog_extract_assets_content">Processing and Extracting Resources from \'%s\'</string>
 	<string name="getting_started_header">Getting Started</string>
@@ -34,10 +36,11 @@
 	<string name="drawer_header_subtitle">Create Substratum Themes on your Device.</string>
 	<string name="dialog_modify_item_title">Modify \'%1$s\'</string>
 	<string name="dialog_rename_file_title">Rename \'%1$s\'</string>
-	<string name="dialog_color_chooser_primary_title">Select Primary Color</string>
-	<string name="dialog_color_chooser_primary_dark_title">Select Primary Dark Color</string>
-
+	<string name="dialog_color_chooser_title">Select a Color</string>
 	<string name="activity_patcher_title">OTGSubs: Theme Patcher</string>
 	<string name="patcher_btn_primary_dark_color">Primary Dark Color (%1$s)</string>
 	<string name="patcher_btn_primary_color">Primary Color (%1$s)</string>
+	<string name="patcher_btn_color">%1$s (%2$s)</string>
+	<string name="dialog_name_title">Enter a Name</string>
+	<string name="dialog_name_content">Give your Color-Schema a Name which you\'ll then see inside Substratum!</string>
 </resources>

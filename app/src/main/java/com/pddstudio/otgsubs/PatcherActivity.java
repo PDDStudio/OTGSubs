@@ -23,7 +23,6 @@ import com.pddstudio.otgsubs.events.ColorChooserDialogEvent;
 import com.pddstudio.otgsubs.events.PatchThemeDialogEvent;
 import com.pddstudio.otgsubs.events.RefreshItemListEvent;
 import com.pddstudio.otgsubs.fragments.ThemePatcherFragment;
-import com.pddstudio.otgsubs.models.ColorChooserType;
 import com.pddstudio.otgsubs.services.PackageService;
 import com.pddstudio.otgsubs.services.PatchTemplateService;
 import com.pddstudio.otgsubs.utils.DeviceUtils;
@@ -74,10 +73,10 @@ public class PatcherActivity extends AppCompatActivity implements ColorChooserDi
 	@Pref
 	protected Preferences_ preferences;
 
-	private ColorChooserType colorChooserType = ColorChooserType.IGNORE;
 	private MaterialDialog loadingDialog;
 	private MaterialDialog patcherDialog;
 	private File assetFileDir;
+	private ColorChooserDialogEvent colorChooserDialogEvent;
 
 	@Override
 	@Click(android.R.id.home)
@@ -101,9 +100,8 @@ public class PatcherActivity extends AppCompatActivity implements ColorChooserDi
 	@Subscribe
 	public void onColorDialogPickerEvent(ColorChooserDialogEvent event) {
 		if(event != null && event.isOpenRequest()) {
-			colorChooserType = event.getColorChooserType();
-			int titleRes = event.getColorChooserType().equals(ColorChooserType.PRIMARY_COLOR) ? R.string.dialog_color_chooser_primary_title : R.string.dialog_color_chooser_primary_dark_title;
-			new ColorChooserDialog.Builder(this, titleRes).allowUserColorInput(true).allowUserColorInputAlpha(true).show();
+			this.colorChooserDialogEvent = event;
+			new ColorChooserDialog.Builder(this, R.string.dialog_color_chooser_title).allowUserColorInput(true).allowUserColorInputAlpha(true).show();
 		} else {
 			Log.w("ColorEvent", "Unknown event received!");
 		}
@@ -208,12 +206,12 @@ public class PatcherActivity extends AppCompatActivity implements ColorChooserDi
 	}
 
 	private void sendColorChosenEvent(@Nullable String color) {
-		if(color != null && !color.isEmpty() && colorChooserType != null) {
-			ColorChooserDialogEvent colorChooserDialogEvent = new ColorChooserDialogEvent(false, colorChooserType);
+		if(color != null && !color.isEmpty() && colorChooserDialogEvent != null) {
+			colorChooserDialogEvent.setOpenRequest(false);
 			colorChooserDialogEvent.setResult(color);
 			eventBus.post(colorChooserDialogEvent);
 		}
-		colorChooserType = ColorChooserType.IGNORE;
+		colorChooserDialogEvent = null;
 	}
 
 	private void toggleLoadingDialog(boolean showDialog) {

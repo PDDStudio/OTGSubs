@@ -1,7 +1,5 @@
 package com.pddstudio.otgsubs.events;
 
-import com.pddstudio.otgsubs.models.ColorChooserType;
-
 /**
  * Created by pddstudio on 26/04/2017.
  */
@@ -10,11 +8,22 @@ public class ColorChooserDialogEvent {
 
 	private String  resultColor;
 	private boolean openRequest;
-	private ColorChooserType colorChooserType;
+	private String templateId;
+	private String templateKey;
 
-	public ColorChooserDialogEvent(boolean openRequest, ColorChooserType colorChooserType) {
+	public ColorChooserDialogEvent(boolean openRequest, String templateId) {
 		this.openRequest = openRequest;
-		this.colorChooserType = colorChooserType;
+		this.templateId = templateId;
+	}
+
+	public ColorChooserDialogEvent withTemplateKey(String templateKey) {
+		this.templateKey = templateKey;
+		return this;
+
+	}
+
+	public void setOpenRequest(boolean openRequest) {
+		this.openRequest = openRequest;
 	}
 
 	public void setResult(String resultLocation) {
@@ -29,8 +38,12 @@ public class ColorChooserDialogEvent {
 		return openRequest;
 	}
 
-	public ColorChooserType getColorChooserType() {
-		return colorChooserType;
+	public String getTemplateId() {
+		return templateId;
+	}
+
+	public String getTemplateKey() {
+		return templateKey;
 	}
 
 }
