@@ -205,6 +205,13 @@ public class PatcherActivity extends AppCompatActivity implements ColorChooserDi
 		PackageService.createApkFromRequestedAssets(this);
 	}
 
+	@Click(R.id.build_patched_theme_btn)
+	protected void onBuildPatchedTheme() {
+		if(getSupportFragmentManager().findFragmentByTag(ThemePatcherFragment.TAG) instanceof ThemePatcherFragment) {
+			((ThemePatcherFragment) getSupportFragmentManager().findFragmentByTag(ThemePatcherFragment.TAG)).onBuildPatchedTheme();
+		}
+	}
+
 	private void sendColorChosenEvent(@Nullable String color) {
 		if(color != null && !color.isEmpty() && colorChooserDialogEvent != null) {
 			colorChooserDialogEvent.setOpenRequest(false);

@@ -114,7 +114,7 @@ public class ThemePatcherFragment extends Fragment implements TemplateItemView.O
 	}
 
 	@Click(R.id.build_patched_theme_btn)
-	protected void onBuildPatchedTheme() {
+	public void onBuildPatchedTheme() {
 		//TODO: update names for each template
 		inputDialog.show(R.string.dialog_name_title, R.string.dialog_name_content, dialogInput -> {
 			String templateName = FormattingUtils.formatUserThemeName(dialogInput);
