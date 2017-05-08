@@ -2,17 +2,19 @@ package com.pddstudio.otgsubs.fragments;
 
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.pddstudio.otgsubs.R;
 import com.pddstudio.otgsubs.beans.EventBusBean;
 import com.pddstudio.otgsubs.beans.ManifestProcessorBean;
+import com.pddstudio.otgsubs.dialogs.InputDialog;
 import com.pddstudio.otgsubs.events.ColorChooserDialogEvent;
 import com.pddstudio.otgsubs.events.PatchThemeDialogEvent;
 import com.pddstudio.otgsubs.events.PatchThemePreparationEvent;
 import com.pddstudio.otgsubs.services.PatchTemplateService;
+import com.pddstudio.otgsubs.utils.FormattingUtils;
 import com.pddstudio.otgsubs.views.TemplateItemView;
 import com.pddstudio.substratum.packager.models.ApkInfo;
 import com.pddstudio.substratum.template.patcher.TemplateConfiguration;
@@ -53,8 +55,14 @@ public class ThemePatcherFragment extends Fragment implements TemplateItemView.O
 	@Bean
 	protected ManifestProcessorBean manifestProcessor;
 
-	@ViewById(R.id.theme_name_input)
-	protected EditText themeNameEditText;
+	@Bean
+	protected InputDialog inputDialog;
+
+	@ViewById(R.id.theme_author_text)
+	protected TextView authorTextView;
+
+	@ViewById(R.id.theme_name_text)
+	protected TextView themeNameTextView;
 
 	@ViewById(R.id.theme_patcher_linear_layout)
 	protected LinearLayout themePatcherLayout;
@@ -76,6 +84,10 @@ public class ThemePatcherFragment extends Fragment implements TemplateItemView.O
 		togglePreparationDialog(false);
 		if (event != null && event.isSuccess()) {
 			this.templates = event.getTemplateConfigurations();
+			if(event.getThemeConfiguration() != null) {
+				themeNameTextView.setText(event.getThemeConfiguration().getThemeName());
+				authorTextView.setText(event.getThemeConfiguration().getThemeAuthor());
+			}
 			onPreparationSucceeded();
 		} else {
 			onPreparationFailed();
@@ -86,6 +98,7 @@ public class ThemePatcherFragment extends Fragment implements TemplateItemView.O
 	protected void prepareManifest() {
 		togglePreparationDialog(true);
 		PatchTemplateService.prepareTargetTheme(getContext(), apkInfo);
+		getActivity().findViewById(R.id.build_patched_theme_btn).setNestedScrollingEnabled(false);
 	}
 
 	@Override
@@ -102,8 +115,14 @@ public class ThemePatcherFragment extends Fragment implements TemplateItemView.O
 
 	@Click(R.id.build_patched_theme_btn)
 	protected void onBuildPatchedTheme() {
-		eventBus.post(new PatchThemeDialogEvent(true));
-		PatchTemplateService.patchTargetTheme(getContext(), apkInfo, templates);
+		//TODO: update names for each template
+		inputDialog.show(R.string.dialog_name_title, R.string.dialog_name_content, dialogInput -> {
+			String templateName = FormattingUtils.formatUserThemeName(dialogInput);
+			updateTemplateNames(templateName);
+			inputDialog.dismiss();
+			eventBus.post(new PatchThemeDialogEvent(true));
+			PatchTemplateService.patchTargetTheme(getContext(), apkInfo, templates);
+		});
 	}
 
 	private void onPreparationFailed() {
@@ -120,6 +139,16 @@ public class ThemePatcherFragment extends Fragment implements TemplateItemView.O
 			templateItemView.setDescription(templateConfiguration.getTemplateDescription());
 			themePatcherLayout.addView(templateItemView);
 		});
+	}
+
+	private void updateTemplateNames(String name) {
+		if(name == null || name.isEmpty()) {
+			//in case the name is missing "OTGSubs" is used instead of null.
+			StreamSupport.stream(templates).forEach(templateConfiguration -> templateConfiguration.setTemplateName(getString(R.string.app_name)));
+		} else {
+			StreamSupport.stream(templates).forEach(templateConfiguration -> templateConfiguration.setTemplateName(name));
+		}
+		StreamSupport.stream(templates).forEach(templateConfiguration -> Log.d(TAG, "updateName() : " + templateConfiguration.getTemplateName()));
 	}
 
 	private void updateTemplate(String templateId, String templateKey, String templateValue) {
