@@ -15,10 +15,11 @@
 				android:title="@string/menu_item_clean"
 				android:icon="@drawable/ic_delete_forever_24dp" />
 
-			<item
+			<!--<item
 				android:id="@+id/menu_import_apk"
 				android:title="@string/menu_item_import"
-				android:icon="@drawable/ic_unarchive_24dp" />
+				android:icon="@drawable/ic_unarchive_24dp" />-->
+
 			<item
 				android:id="@+id/menu_build_apk"
 				android:title="@string/menu_item_build"
