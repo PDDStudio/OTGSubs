@@ -17,8 +17,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -38,6 +36,7 @@ import com.pddstudio.otgsubs.adapters.AssetsPageAdapter;
 import com.pddstudio.otgsubs.beans.EventBusBean;
 import com.pddstudio.otgsubs.beans.ManifestProcessorBean;
 import com.pddstudio.otgsubs.beans.PackageInfoBean;
+import com.pddstudio.otgsubs.dialogs.InfoDialog;
 import com.pddstudio.otgsubs.events.AssetTypeAddedEvent;
 import com.pddstudio.otgsubs.events.FileChooserDialogEvent;
 import com.pddstudio.otgsubs.events.RefreshItemListEvent;
@@ -104,6 +103,9 @@ public class MainActivity extends AppCompatActivity
 
 	@Bean
 	ManifestProcessorBean manifestProcessor;
+
+	@Bean
+	InfoDialog infoDialog;
 
 	@Pref
 	Preferences_ preferences;
@@ -282,7 +284,6 @@ public class MainActivity extends AppCompatActivity
 	@AfterViews
 	protected void setupUi() {
 		toolbar.inflateMenu(R.menu.menu_main);
-		disableImportMenuItemIfReleaseBuild();
 		setSupportActionBar(toolbar);
 
 		if (!hasRequiredPermissions()) {
@@ -357,15 +358,19 @@ public class MainActivity extends AppCompatActivity
 		PackageService.createApkFromRequestedAssets(this);
 	}
 
-	@OptionsItem(R.id.menu_import_apk)
+	//@OptionsItem(R.id.menu_import_apk)
 	protected void onImportApkMenuItemSelected() {
 		MaterialSimpleListAdapter adapter = new MaterialSimpleListAdapter(this);
 		StreamSupport.stream(getApplicationListDialogItems(isForThemePatching ? manifestProcessor.getSupportedThemes() : apkExtractor.getApkInfoList())).forEach(adapter::add);
-		new MaterialDialog.Builder(this).adapter(adapter, null).dismissListener(dialog -> {
-			if(isForThemePatching) {
-				isForThemePatching = false;
-			}
-		}).show();
+		if(adapter.getItemCount() > 0) {
+			new MaterialDialog.Builder(this).adapter(adapter, null).dismissListener(dialog -> {
+				if(isForThemePatching) {
+					isForThemePatching = false;
+				}
+			}).show();
+		} else {
+			infoDialog.show(R.string.dialog_info_no_compatible_theme_title, R.string.dialog_info_no_compatible_theme_content);
+		}
 	}
 
 	@OptionsItem(R.id.menu_restore_defaults)
@@ -493,14 +498,6 @@ public class MainActivity extends AppCompatActivity
 				return 0;
 			}
 		}).collect(Collectors.toList());
-	}
-
-	private void disableImportMenuItemIfReleaseBuild() {
-		Menu menu = toolbar.getMenu();
-		MenuItem importItem;
-		if((importItem = menu.findItem(R.id.menu_import_apk)) != null) {
-			importItem.setVisible(BuildConfig.DEBUG);
-		}
 	}
 
 	private void setCorrectFabColor() {

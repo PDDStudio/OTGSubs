@@ -43,4 +43,7 @@
 	<string name="patcher_btn_color">%1$s (%2$s)</string>
 	<string name="dialog_name_title">Enter a Name</string>
 	<string name="dialog_name_content">Give your Color-Schema a Name which you\'ll then see inside Substratum!</string>
+	<string name="dialog_info_no_compatible_theme_title">No compatible Theme</string>
+	<string name="dialog_info_no_compatible_theme_content">It seems like you don\'t have any Theme installed that supports OTGSubs!\nContact your Theme Developer and request OTGSubs in order
+		to be able to use this Feature.</string>
 </resources>
