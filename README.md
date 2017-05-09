@@ -1,5 +1,6 @@
 ## OTGSubs
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/cd9a450047584a52a9a0979e8bead2d9)](https://www.codacy.com/app/PDDStudio/OTGSubs?utm_source=github.com&utm_medium=referral&utm_content=PDDStudio/OTGSubs&utm_campaign=badger)
 [![](https://raw.githubusercontent.com/PDDStudio/OTGSubs/develop/gfx/otgsubs_banner.jpg)](https://play.google.com/store/apps/details?id=com.pddstudio.otgsubs)
 
 > An Application to create and package Substratum Themes directly on your Android Phone.
