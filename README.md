@@ -1,6 +1,7 @@
 ## OTGSubs
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/cd9a450047584a52a9a0979e8bead2d9)](https://www.codacy.com/app/PDDStudio/OTGSubs?utm_source=github.com&utm_medium=referral&utm_content=PDDStudio/OTGSubs&utm_campaign=badger)
+
 [![](https://raw.githubusercontent.com/PDDStudio/OTGSubs/develop/gfx/otgsubs_banner.jpg)](https://play.google.com/store/apps/details?id=com.pddstudio.otgsubs)
 
 > An Application to create and package Substratum Themes directly on your Android Phone.
@@ -22,6 +23,10 @@ You can opt-in to test the first Alpha Versions of OTGSubs directly via Google P
 or
 
 [Watch the Demo Video on YouTube](https://www.youtube.com/watch?v=c860SBdufzQ)
+
+### Integrate OTGSubs Support (for Themers)
+
+You can find a detailed Instruction to include OTGSubs support in the [Wiki](https://github.com/PDDStudio/OTGSubs/wiki/Themers:-Add-OTGSubs-Support-to-your-Theme)
 
 ### Project Setup
 
