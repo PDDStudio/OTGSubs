@@ -46,4 +46,6 @@
 	<string name="dialog_info_no_compatible_theme_title">No compatible Theme</string>
 	<string name="dialog_info_no_compatible_theme_content">It seems like you don\'t have any Theme installed that supports OTGSubs!\nContact your Theme Developer and request OTGSubs in order
 		to be able to use this Feature.</string>
+	<string name="notification_otgsubs_theme_found_title">OTGSubs Compatible Theme Found!</string>
+	<string name="notification_otgsubs_theme_found_summary">\'%1$s\' is compatible with OTGSubs</string>
 </resources>
