@@ -71,4 +71,16 @@
 	<string name="library_CommonsIo_isOpenSource">true</string>
 	<string name="library_CommonsIo_repositoryLink">https://commons.apache.org/proper/commons-io/</string>
 
+	<!-- phrase-java -->
+	<string name="define_PhraseJava"></string>
+	<string name="library_PhraseJava_author">Patrick Jung</string>
+	<string name="library_PhraseJava_authorWebsite">https://github.com/PDDStudio/phrase-java</string>
+	<string name="library_PhraseJava_libraryName">phrase-java</string>
+	<string name="library_PhraseJava_libraryDescription">A small String Template Library (10k) for Android and Java.</string>
+	<string name="library_PhraseJava_libraryVersion">1.0.1</string>
+	<string name="library_PhraseJava_libraryWebsite">https://github.com/PDDStudio/phrase-java</string>
+	<string name="library_PhraseJava_licenseId">apache_2_0</string>
+	<string name="library_PhraseJava_isOpenSource">true</string>
+	<string name="library_PhraseJava_repositoryLink">https://github.com/PDDStudio/phrase-java</string>
+
 </resources>
