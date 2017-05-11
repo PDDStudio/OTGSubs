@@ -39,16 +39,16 @@ public class PackageManagerReceiver extends AbstractBroadcastReceiver {
 	@ReceiverAction(actions = Intent.ACTION_PACKAGE_ADDED, dataSchemes = "package")
 	protected void onPackageAdded(Intent intent) {
 		Log.d(TAG, "onPackageAdded() : " + intent);
-		doStuff(intent);
+		validatePackageCompatibility(intent);
 	}
 
 	@ReceiverAction(actions = Intent.ACTION_PACKAGE_REPLACED, dataSchemes = "package")
 	protected void onPackageUpdated(Intent intent) {
 		Log.d(TAG, "onPackageUpdated() : " + intent);
-		doStuff(intent);
+		validatePackageCompatibility(intent);
 	}
 
-	private void doStuff(Intent intent) {
+	private void validatePackageCompatibility(Intent intent) {
 		int uid = intent.getIntExtra(Intent.EXTRA_UID, -1);
 
 		if (uid == -1) {
