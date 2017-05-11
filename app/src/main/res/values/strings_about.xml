@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="about_app_title">About OTGSubs</string>
+	<string name="about_app_desc">
+		<![CDATA[
+		Create, Edit and Build Substratum Themes on your Phone.<br />
+		<b>Free, OpenSource and Build with Love!</b><br />
+		By Patrick Jung
+		]]>
+	</string>
+
+	<!-- floatingactionbutton -->
+	<string name="define_ClansFloatingActionButton"></string>
+	<string name="library_ClansFloatingActionButton_author">Dmytro Tarianyk</string>
+	<string name="library_ClansFloatingActionButton_authorWebsite">https://github.com/Clans</string>
+	<string name="library_ClansFloatingActionButton_libraryName">FloatingActionButton</string>
+	<string name="library_ClansFloatingActionButton_libraryDescription">Yet another implementation of Floating Action Button for Android with lots of features.</string>
+	<string name="library_ClansFloatingActionButton_libraryVersion">1.6.2</string>
+	<string name="library_ClansFloatingActionButton_libraryWebsite">https://github.com/Clans/FloatingActionButton</string>
+	<string name="library_ClansFloatingActionButton_licenseId">apache_2_0</string>
+	<string name="library_ClansFloatingActionButton_isOpenSource">true</string>
+	<string name="library_ClansFloatingActionButton_repositoryLink">https://github.com/Clans/FloatingActionButton</string>
+
+	<!-- Android Annotations -->
+	<string name="define_AndroidAnnotations"></string>
+	<string name="library_AndroidAnnotations_author">AndroidAnnotations</string>
+	<string name="library_AndroidAnnotations_authorWebsite">https://github.com/androidannotations</string>
+	<string name="library_AndroidAnnotations_libraryName">AndroidAnnotations</string>
+	<string name="library_AndroidAnnotations_libraryDescription">AndroidAnnotations is an Open Source framework that speeds up Android development. It takes care of the plumbing, and lets
+		you concentrate on what\'s really important. By simplifying your code, it facilitates its maintenance.</string>
+	<string name="library_AndroidAnnotations_libraryVersion">4.3.0</string>
+	<string name="library_AndroidAnnotations_libraryWebsite">https://github.com/androidannotations/androidannotations</string>
+	<string name="library_AndroidAnnotations_licenseId">apache_2_0</string>
+	<string name="library_AndroidAnnotations_isOpenSource">true</string>
+	<string name="library_AndroidAnnotations_repositoryLink">https://github.com/androidannotations/androidannotations</string>
+
+	<!-- StreamSupport -->
+	<string name="define_StreamSupport"></string>
+	<string name="library_StreamSupport_author">StreamSupport</string>
+	<string name="library_StreamSupport_authorWebsite">https://github.com/streamsupport</string>
+	<string name="library_StreamSupport_libraryName">StreamSupport</string>
+	<string name="library_StreamSupport_libraryDescription">Backport of Java 8 java.util.stream API to Java 6/7 and Android</string>
+	<string name="library_StreamSupport_libraryVersion">1.5.4</string>
+	<string name="library_StreamSupport_libraryWebsite">https://github.com/streamsupport/streamsupport</string>
+	<string name="library_StreamSupport_licenseId">gpl_2</string>
+	<string name="library_StreamSupport_isOpenSource">true</string>
+	<string name="library_StreamSupport_repositoryLink">https://github.com/streamsupport/streamsupport</string>
+
+	<!-- zt-zip -->
+	<string name="define_ZtZip"></string>
+	<string name="library_ZtZip_author">Rein Raudjärv</string>
+	<string name="library_ZtZip_authorWebsite">https://github.com/zeroturnaround</string>
+	<string name="library_ZtZip_libraryName">zt-zip</string>
+	<string name="library_ZtZip_libraryDescription">The project was started and coded by Rein Raudjärv when he needed to process a large set of large ZIP archives for LiveRebel
+		internals. Soon after we started using the utility in other projects because of the ease of use and it just worked. The project is built using java.util.zip.* packages for stream based access. Most convenience methods for filesystem usage is also supported.</string>
+	<string name="library_ZtZip_libraryVersion">1.11</string>
+	<string name="library_ZtZip_libraryWebsite">https://github.com/zeroturnaround/zt-zip</string>
+	<string name="library_ZtZip_licenseId">apache_2_0</string>
+	<string name="library_ZtZip_isOpenSource">true</string>
+	<string name="library_ZtZip_repositoryLink">https://github.com/zeroturnaround/zt-zip</string>
+
+	<!-- commons-io -->
+	<string name="define_CommonsIo"></string>
+	<string name="library_CommonsIo_author">Apache Authors</string>
+	<string name="library_CommonsIo_authorWebsite">https://commons.apache.org/proper/commons-io/</string>
+	<string name="library_CommonsIo_libraryName">commons-io</string>
+	<string name="library_CommonsIo_libraryDescription">Commons IO is a library of utilities to assist with developing IO functionality.</string>
+	<string name="library_CommonsIo_libraryVersion">2.5</string>
+	<string name="library_CommonsIo_libraryWebsite">https://commons.apache.org/proper/commons-io/</string>
+	<string name="library_CommonsIo_licenseId">apache_2_0</string>
+	<string name="library_CommonsIo_isOpenSource">true</string>
+	<string name="library_CommonsIo_repositoryLink">https://commons.apache.org/proper/commons-io/</string>
+
+	<!-- phrase-java -->
+	<string name="define_PhraseJava"></string>
+	<string name="library_PhraseJava_author">Patrick Jung</string>
+	<string name="library_PhraseJava_authorWebsite">https://github.com/PDDStudio/phrase-java</string>
+	<string name="library_PhraseJava_libraryName">phrase-java</string>
+	<string name="library_PhraseJava_libraryDescription">A small String Template Library (10k) for Android and Java.</string>
+	<string name="library_PhraseJava_libraryVersion">1.0.1</string>
+	<string name="library_PhraseJava_libraryWebsite">https://github.com/PDDStudio/phrase-java</string>
+	<string name="library_PhraseJava_licenseId">apache_2_0</string>
+	<string name="library_PhraseJava_isOpenSource">true</string>
+	<string name="library_PhraseJava_repositoryLink">https://github.com/PDDStudio/phrase-java</string>
+
+</resources>

@@ -35,6 +35,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.pddstudio.otgsubs.adapters.AssetsPageAdapter;
 import com.pddstudio.otgsubs.beans.EventBusBean;
 import com.pddstudio.otgsubs.beans.ManifestProcessorBean;
+import com.pddstudio.otgsubs.beans.NavigationBean;
 import com.pddstudio.otgsubs.beans.PackageInfoBean;
 import com.pddstudio.otgsubs.dialogs.InfoDialog;
 import com.pddstudio.otgsubs.events.AssetTypeAddedEvent;
@@ -106,6 +107,9 @@ public class MainActivity extends AppCompatActivity
 
 	@Bean
 	InfoDialog infoDialog;
+
+	@Bean
+	NavigationBean navigationBean;
 
 	@Pref
 	Preferences_ preferences;
@@ -253,13 +257,16 @@ public class MainActivity extends AppCompatActivity
 
 			switch ((int) drawerItem.getIdentifier()) {
 				case ABOUT_ITEM:
-					//AboutActivity.open(this);
+					navigationBean.openAboutScreen();
 					break;
 				case SETTINGS_ITEM:
-					SettingsActivity.open(this, SETTINGS_REQUEST_CODE);
+					navigationBean.openSettingsScreen(SETTINGS_REQUEST_CODE);
+					break;
+				case GITHUB_ITEM:
+					navigationBean.openGitHubPage();
 					break;
 			}
-			if (drawerItem.getIdentifier() != SETTINGS_ITEM && drawerItem.getIdentifier() != GITHUB_ITEM) {
+			if (drawerItem.getIdentifier() != SETTINGS_ITEM && drawerItem.getIdentifier() != GITHUB_ITEM && drawerItem.getIdentifier() != ABOUT_ITEM) {
 				switchPageForDrawerSelection(id);
 				if(((int) drawerItem.getIdentifier()) != THEME_PATCHER_ITEM) {
 					currentSelection = (int) drawerItem.getIdentifier();

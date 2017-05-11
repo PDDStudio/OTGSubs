@@ -49,6 +49,7 @@ ext {
     fontAwesomeTypefaceLibraryVersion = "4.7.0.0"
     phraseJavaLibraryVersion = "1.0.1"
     appCamLibraryVersion = "0.2.0"
+    aboutLibrariesVersion = "5.9.6"
 }
 
 task clean(type: Delete) {
