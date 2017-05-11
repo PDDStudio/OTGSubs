@@ -38,6 +38,7 @@
 			<intent-filter>
 				<action android:name="android.intent.action.PACKAGE_ADDED" />
 				<action android:name="android.intent.action.PACKAGE_REPLACED" />
+				<category android:name="android.intent.category.DEFAULT" />
 				<data android:scheme="package" />
 			</intent-filter>
 		</receiver>
