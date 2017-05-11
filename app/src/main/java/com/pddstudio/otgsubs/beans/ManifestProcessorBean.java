@@ -63,4 +63,22 @@ public class ManifestProcessorBean {
 		}).filter(Objects::nonNull).collect(Collectors.toList());
 	}
 
+	public boolean isPackageSupported(String packageName) {
+		if(packageName == null || packageName.isEmpty()) {
+			return false;
+		}
+		return StreamSupport.stream(getSupportedThemes()).anyMatch(apkInfo -> apkInfo.getPackageName().equals(packageName));
+	}
+
+	public ApkInfo getApkInfoForPackage(String packageName) {
+		if(!isPackageSupported(packageName)) {
+			return null;
+		}
+		return StreamSupport.stream(getSupportedThemes()).filter(apkInfo -> apkInfo.getPackageName().equals(packageName)).findAny().orElse(null);
+	}
+
+	public Context getRootContext() {
+		return context;
+	}
+
 }
