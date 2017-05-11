@@ -31,6 +31,10 @@ dependencies {
     compile "com.android.support:design:${rootProject.ext.supportLibraryVersion}"
     compile "com.android.support:cardview-v7:${rootProject.ext.supportLibraryVersion}"
 
+    compile("com.mikepenz:aboutlibraries:${rootProject.ext.aboutLibrariesVersion}@aar") {
+        transitive = true
+    }
+
     compile("com.mikepenz:materialdrawer:${rootProject.ext.materialDrawerLibraryVersion}@aar") {
         transitive = true
     }
