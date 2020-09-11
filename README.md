@@ -8,9 +8,16 @@
 >
 > OTGSubs is a synonym for On-The-Go Substratum
 
+### UPDATE: Project Status
+
+This project has not received any updates in the last years and has not been tested on never Susbtratum compatible ROMs.
+I'll keep this project archived so it's still available to browse the code and see how it worked internally.
+
 **Note:**
 
 This project is still in **Alpha Stage** and might contain several rough edges that need to be fixed!
+
+This project was featured @ XDA-Developer: [Read it here](https://www.xda-developers.com/otgsubs-lets-you-create-and-package-substratum-themes-directly-on-a-phone-or-tablet/)
 
 ### PlayStore Alpha Testing
 
@@ -38,8 +45,7 @@ The project contains three modules:
 
 ### Author
 
-* Patrick Jung [<patrick.pddstudio@gmail.com>](mailto:patrick.pddstudio@gmail.com)
-* Google+ [Profile](https://plus.google.com/+PatrickJung42)
+* Patrick Jung (patrick.pddstudio [] gmail.com)
 
 ### Contributors
 
